@@ -1,0 +1,42 @@
+.activeSkill {
+    border: 1px solid black;
+    background-color: green;
+    color: white;
+    padding-left: 3px;
+    padding-right: 3px;
+    cursor: pointer;
+}
+
+.skillnodesdiv {
+    border: 1px solid red;
+    padding: 5px;
+}
+
+.pointError {
+    background-color: #f00;
+}
+
+.skillPointTable tr:nth-child(even) {
+    background: #dadada;
+}
+
+.pointInput {
+    width: 20px;
+}
+
+.nonMaxedPoints {
+    background: #ff0;
+}
+
+.maxAllPointsBTN {
+    margin-left: auto;
+    margin-right: 0;
+    display: block;
+}
+
+.charTextArea {
+    width: 535px;
+    height: 240px;
+    padding: 10px;
+    border: 5px solid green;
+}

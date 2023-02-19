@@ -1,0 +1,425 @@
+<!DOCTYPE HTML>
+<html lang="en">
+
+<head>
+    <meta charset="utf-8">
+    <title>Last Epoch Beta 0.8.5f</title>
+    <style></style>
+    <link href="lastEpoch.css" rel="stylesheet" media="all" onload="this.media='all'; this.onload=null;">
+    <script src="lastEpoch.js"></script>
+    <script type="text/javascript">
+        var character = {};
+        var ALL_SKILLS_DATA = le_function.getAllSkillsData();
+        var generalSkillData = {
+            "maxSkillXP": 5700000, // This should never need to be changed
+            "unspentPoints": 0 // This should never need to be changed
+        };
+        var rxSpace = new RegExp(" ", "g");
+        var rxTagUS = new RegExp("_", "g");
+        var func_ = {
+            init: function () {
+                func_.resetFileInput();
+                func_.clearTextArea();
+                func_.hideSaveBtn();
+                func_.hideMainSkillsDiv();
+                func_.setTextAreaOnchangeFunction();
+                func_.setInputButtonOnclickFunction();
+                var cod = document.getElementById("character_skillList_div");
+                if (cod) {
+                    // First, build each Class header
+                    ALL_SKILLS_DATA.forEach(function (asd) {
+                        if (asd["class"] != "" && asd["subclass"] == "" && !document.getElementById("class_div_" + asd["class"].toLowerCase().replace(rxSpace, ""))) {
+                            var classDiv = document.createElement("div");
+                            classDiv.id = "class_div_" + asd["class"].toLowerCase().replace(rxSpace, "");
+                            //classDiv.onclick = function(){ func_.collapseMe(this); }
+                            var span = document.createElement("span");
+                            span.textContent = asd["class"];
+                            span.style.fontWeight = "bold";
+                            span.style.cursor = "pointer";
+                            span.onclick = function () { func_.toggleCollapse(this); }
+                            classDiv.appendChild(span);
+                            cod.appendChild(classDiv);
+                        }
+                    });
+                    // Second, list class base skills
+                    ALL_SKILLS_DATA.forEach(function (asd) {
+                        if (asd["class"] != "" && asd["subclass"] == "") {
+                            var mainClassDiv = document.getElementById("class_div_" + asd["class"].toLowerCase().replace(rxSpace, ""));
+                            if (mainClassDiv) {
+                                var classDiv = document.createElement("div");
+                                classDiv.id = "class_" + asd["class"].toLowerCase().replace(rxSpace, "") + "_baseskill_" + asd.tag.toLowerCase().replace(rxTagUS, "") + "_" + asd.treeID;
+                                classDiv.style.paddingLeft = "20px";
+                                var span = document.createElement("span");
+                                span.textContent = asd["name"];
+                                classDiv.appendChild(span);
+                                mainClassDiv.appendChild(classDiv);
+                            }
+                        }
+                    });
+                    // Third, list subclasses
+                    ALL_SKILLS_DATA.forEach(function (asd) {
+                        if (asd["class"] != "" && asd["subclass"] != "") {
+                            var mainClassDiv = document.getElementById("class_div_" + asd["class"].toLowerCase().replace(rxSpace, ""));
+                            var classSubclassDiv = document.getElementById("class_" + asd["class"].toLowerCase().replace(rxSpace, "") + "_subclass_" + asd["subclass"].toLowerCase().replace(rxSpace, ""));
+                            if (mainClassDiv) {
+
+                                if (!classSubclassDiv) {
+                                    classSubclassDiv = document.createElement("div");
+                                    classSubclassDiv.id = "class_" + asd["class"].toLowerCase().replace(rxSpace, "") + "_subclass_" + asd["subclass"].toLowerCase().replace(rxSpace, "");
+                                    classSubclassDiv.style.paddingLeft = "40px";
+                                    var span = document.createElement("span");
+                                    span.textContent = asd["subclass"];
+                                    span.style.fontWeight = "bold";
+                                    span.style.cursor = "pointer";
+                                    span.onclick = function () { func_.toggleCollapse(this); }
+                                    classSubclassDiv.appendChild(span);
+                                    mainClassDiv.appendChild(classSubclassDiv);
+                                }
+
+                                var classDiv = document.createElement("div");
+                                classDiv.id = "class_" + asd["class"].toLowerCase().replace(rxSpace, "") + "_subclass_" + asd["subclass"].toLowerCase().replace(rxSpace, "") + "_baseskill_" + asd.tag.toLowerCase().replace(rxTagUS, "") + "_" + asd.treeID;
+                                classDiv.style.paddingLeft = "20px";
+                                var span = document.createElement("span");
+                                span.textContent = asd["name"];
+                                classDiv.appendChild(span);
+                                classSubclassDiv.appendChild(classDiv);
+                            }
+                        }
+                    });
+                }
+                // Create an addEventListener for when a character file is loaded
+                func_.readFile();
+            },
+            hideSaveBtn: function () {
+                var div = document.getElementById("saveButton_div");
+                if (div) {
+                    div.style.display = "none";
+                }
+            },
+            showSaveBtn: function () {
+                var div = document.getElementById("saveButton_div");
+                if (div) {
+                    div.style.display = "";
+                }
+            },
+            hideMainSkillsDiv: function () {
+                var div = document.getElementById("character_skillList_div");
+                if (div) {
+                    div.style.display = "none";
+                }
+            },
+            showMainSkillsDiv: function () {
+                var div = document.getElementById("character_skillList_div");
+                if (div) {
+                    div.style.display = "";
+                }
+            },
+            clearTextArea: function () {
+                var ta = document.getElementById("saveFileData");
+                if (ta) {
+                    ta.value = "";
+                    ta.style.display = "none";
+                    func_.hideTextAreaDIV();
+                    func_.deleteAllSkillNodeDivs();
+                }
+            },
+            setTextArea: function (data) {
+                var ta = document.getElementById("saveFileData");
+                if (ta) {
+                    ta.value = data;
+                    ta.style.display = "";
+                    func_.showTextAreaDIV();
+                }
+            },
+            deleteAllSkillNodeDivs: function () {
+                var safety = 500;
+                while(document.getElementsByClassName("skillnodesdiv")[0] && --safety > 0){
+                    document.getElementsByClassName("skillnodesdiv")[0].parentNode.removeChild(document.getElementsByClassName("skillnodesdiv")[0]);
+                }
+            },
+            resetFileInput: function () {
+                var e = document.getElementById("inputfile");
+                if (e) {
+                    e.value = "";
+                }
+            },
+            hideTextAreaDIV: function () {
+                var div = document.getElementById("saveFileData_div");
+                if (div) {
+                    div.style.display = "none";
+                }
+            },
+            showTextAreaDIV: function () {
+                var div = document.getElementById("saveFileData_div");
+                if (div) {
+                    div.style.display = "";
+                }
+            },
+            readFile: function () {
+                document.getElementById('inputfile').addEventListener('change', function () {
+                    var fr = new FileReader();
+                    fr.onload = function () {
+                        func_.showSaveBtn();
+                        func_.showMainSkillsDiv();
+                        character = {};
+                        fileDataPlaceholder = fr.result.toString();
+                        character = JSON.parse(fileDataPlaceholder.split('EPOCH')[1]);
+                        character.savedSkillTrees.forEach(function (fileSkillTree) {
+                            if (fileSkillTree.treeID && fileSkillTree.treeID != "") {
+                                ALL_SKILLS_DATA.forEach(function (asd) {
+                                    if (asd.treeID == fileSkillTree.treeID) {
+                                        var skill_DIV = document.getElementById("class_" + asd["class"].toLowerCase().replace(rxSpace, "") + "_baseskill_" + asd.tag.toLowerCase().replace(rxTagUS, "") + "_" + asd.treeID);
+                                        if (skill_DIV) {
+                                            skill_DIV.children[0].classList.add("activeSkill");
+                                            skill_DIV.children[0].onclick = function () { func_.toggleSkillEdit(skill_DIV, asd, fileSkillTree); }
+                                        } else {
+                                            skill_DIV = document.getElementById("class_" + asd["class"].toLowerCase().replace(rxSpace, "") + "_subclass_" + asd["subclass"].toLowerCase().replace(rxSpace, "") + "_baseskill_" + asd.tag.toLowerCase().replace(rxTagUS, "") + "_" + asd.treeID);
+                                            if (skill_DIV) {
+                                                skill_DIV.children[0].classList.add("activeSkill");
+                                                skill_DIV.children[0].onclick = function () { func_.toggleSkillEdit(skill_DIV, asd, fileSkillTree); }
+                                            } else {
+                                                console.warn("NO SKILL_DIV_x for " + asd.treeID);
+                                            }
+                                        }
+                                    }
+                                });
+                            }
+                        });
+                    }
+                    fr.readAsText(this.files[0]);
+                })
+            },
+            checkMax: function (e, max) {
+                if (isNaN(parseInt(e.value))) {
+                    e.value = 0;
+                    //e.classList.add("pointError");
+                    alert("not a number, setting value to 0");
+                } //else {
+                // e.classList.remove("pointError");
+                //}
+
+                if (parseInt(e.value, 10) > parseInt(max, 10)) {
+                    e.value = parseInt(max, 10);
+                    alert("setting to max");
+                }
+
+                if (parseInt(e.value, 10) < parseInt(max, 10)) {
+                    e.classList.add("nonMaxedPoints");
+                } else {
+                    e.classList.remove("nonMaxedPoints");
+                }
+            },
+            toggleCollapse: function (e) {
+                var p = e.parentNode;
+                for (var i = 0; i < p.children.length; i++) {
+                    if (p.children[i].tagName == "DIV") {
+                        if (p.children[i].style.display == "none") {
+                            p.children[i].style.display = "";
+                        } else {
+                            p.children[i].style.display = "none";
+                        }
+                    }
+                }
+            },
+            maxAllPoints: function (asd, fileSkillTree) {
+                asd.nodeIDs.forEach(function (asdNode) {
+                    var nodeFound = false;
+                    var INPUT = document.getElementById("input_" + asd.treeID + "_" + asdNode["name"].toLowerCase().replace(rxSpace, "") + "_" + asdNode.id);
+                    fileSkillTree.nodeIDs.forEach(function (fstNode, fstIndex) {
+                        if (parseInt(fstNode, 10) == parseInt(asdNode.id, 10)) {
+                            nodeFound = true;
+                            if (INPUT) {
+                                fileSkillTree.nodePoints[fstIndex] = parseInt(asdNode.max, 10);
+                                INPUT.value = parseInt(asdNode.max, 10);
+                                INPUT.dispatchEvent(new Event('change', { 'bubbles': true }));
+                                return;
+                            }
+                        }
+                    });
+                    if (!nodeFound && INPUT) {
+                        fileSkillTree.nodeIDs.push(parseInt(asdNode.id, 10));
+                        fileSkillTree.nodePoints.push(parseInt(asdNode.max, 10));
+                        INPUT.value = parseInt(asdNode.max, 10);
+                        INPUT.dispatchEvent(new Event('change', { 'bubbles': true }));
+                    }
+                });
+            },
+            toggleSkillEdit: function (skill_DIV, asd, fileSkillTree) {
+                var skillNodesDIV = document.getElementById("skillnodesdiv_" + asd.treeID);
+                if (!skillNodesDIV) {
+                    skillNodesDIV = document.createElement("div");
+                    skillNodesDIV.setAttribute("treeid", asd.treeID);
+                    skillNodesDIV.id = "skillnodesdiv_" + asd.treeID;
+                    skillNodesDIV.classList.add("skillnodesdiv");
+
+                    var allMaxDIV = document.createElement("div");
+                    var allMaxBtn = document.createElement("button");
+                    allMaxBtn.classList.add("maxAllPointsBTN");
+                    allMaxBtn.innerText = "Max all points";
+                    allMaxBtn.setAttribute("treeid", asd.treeID);
+                    allMaxBtn.onclick = function () { func_.maxAllPoints(asd, fileSkillTree); };
+                    allMaxDIV.appendChild(allMaxBtn);
+
+                    var tbl = document.createElement("table");
+                    tbl.classList.add("skillPointTable");
+
+                    var tblThTr = document.createElement("tr");
+                    var th = document.createElement("th");
+                    th.innerText = "Node name";
+                    tblThTr.appendChild(th);
+                    th = document.createElement("th");
+                    th.innerText = "Allocated Points";
+                    tblThTr.appendChild(th);
+                    th = document.createElement("th");
+                    th.innerText = "Max Points";
+                    tblThTr.appendChild(th);
+                    tbl.appendChild(tblThTr);
+
+                    fileSkillTree.unspentPoints = generalSkillData.unspentPoints;
+                    fileSkillTree.xp = generalSkillData.maxSkillXP;
+                    asd.nodeIDs.forEach(function (asdNode) {
+                        fstNode_found = false;
+                        var TR = document.createElement("tr");
+                        var INPUT = document.createElement("input");
+                        INPUT.id = "input_" + asd.treeID + "_" + asdNode["name"].toLowerCase().replace(rxSpace, "") + "_" + asdNode.id;
+                        INPUT.type = "text";
+                        INPUT.setAttribute("treeid", asd.treeID);
+                        INPUT.setAttribute("nodeid", asdNode.id);
+                        INPUT.value = 0;
+
+                        fileSkillTree.nodeIDs.forEach(function (fstNode, fstIndex) {
+                            if (parseInt(asdNode.id, 10) == parseInt(fstNode, 10)) {
+                                INPUT.value = fileSkillTree.nodePoints[fstIndex];
+                                INPUT.dispatchEvent(new Event('change', { 'bubbles': true }));
+                                return;
+                            }
+                        });
+
+                        INPUT.onchange = function () { func_.checkMax(this, asdNode.max); }
+                        INPUT.classList.add("pointInput");
+                        if (parseInt(INPUT.value, 10) < parseInt(asdNode.max, 10)) {
+                            INPUT.classList.add("nonMaxedPoints");
+                        }
+
+                        // Column: Skill Name
+                        var TD = document.createElement("td");
+                        TD.innerText = asdNode["name"];
+                        TR.appendChild(TD);
+
+                        // Column: Skill Points
+                        TD = document.createElement("td");
+                        TD.style.textAlign = "center";
+                        TD.appendChild(INPUT);
+                        TR.appendChild(TD);
+
+                        // Column: Max Skill Points
+                        TD = document.createElement("td");
+                        TD.style.textAlign = "center";
+                        TD.innerText = asdNode.max;
+                        TR.appendChild(TD);
+
+                        // Append the TR to the table
+                        tbl.appendChild(TR);
+                    });
+
+                    skillNodesDIV.appendChild(allMaxDIV);
+                    skillNodesDIV.appendChild(tbl);
+                    skill_DIV.appendChild(skillNodesDIV);
+                } else {
+                    if (skillNodesDIV.style.display == "none") {
+                        skillNodesDIV.style.display = "";
+                    } else {
+                        skillNodesDIV.style.display = "none";
+                    }
+                }
+            },
+            saveAndDisplay: function () {
+                var character_skillList_div = document.getElementById("character_skillList_div");
+                if (character_skillList_div) {
+                    var csdInputs = character_skillList_div.getElementsByTagName("input");
+                    for (var i = 0; i < csdInputs.length; i++) {
+                        if (csdInputs[i].hasAttribute("treeid") && csdInputs[i].hasAttribute("nodeid")) {
+                            var nodeFound = false;
+                            character.savedSkillTrees.forEach(function (fileSkillTree) {
+                                fileSkillTree.nodeIDs.forEach(function (fstNode, fstIndex) {
+                                    if (fileSkillTree.treeID == csdInputs[i].getAttribute("treeid")) {
+                                        if (parseInt(fstNode, 10) == parseInt(csdInputs[i].getAttribute("nodeid"), 10)) {
+                                            // If there's at least 1 point, go ahead and update the value
+                                            if (parseInt(csdInputs[i].value, 10) > 0) {
+                                                fileSkillTree.nodePoints[fstIndex] = parseInt(csdInputs[i].value, 10);
+                                            } else {
+                                                // All points were removed, so let's remove the nodeID and the 0 value
+
+                                                // Remove the skill
+                                                fileSkillTree.nodeIDs.splice(fstIndex, 1);
+                                                // Remove the point
+                                                fileSkillTree.nodePoints.splice(fstIndex, 1);
+                                            }
+                                            nodeFound = true;
+                                        }
+                                    }
+                                });
+                            });
+                            if (!nodeFound && parseInt(csdInputs[i].value, 10) > 0) {
+                                character.savedSkillTrees.forEach(function (fileSkillTree) {
+                                    if (fileSkillTree.treeID == csdInputs[i].getAttribute("treeid")) {
+                                        fileSkillTree.nodeIDs.push(parseInt(csdInputs[i].getAttribute("nodeid"), 10));
+                                        fileSkillTree.nodePoints.push(parseInt(csdInputs[i].value, 10));
+                                        return;
+                                    }
+                                });
+                            }
+                        }
+                    }
+                    func_.setTextArea("EPOCH" + JSON.stringify(character));
+                }
+            },
+            setTextAreaOnchangeFunction: function () {
+                var ta = document.getElementById("saveFileData");
+                if (ta) {
+                    ta.onchange = function () { func_.textAreaChanged(this); };
+                }
+            },
+            setInputButtonOnclickFunction: function () {
+                var e = document.getElementById("inputfile");
+                if (e) {
+                    e.onclick = function () {
+                        func_.hideSaveBtn();
+                        func_.clearTextArea();
+                        func_.resetFileInput();
+                        func_.hideMainSkillsDiv();
+                    };
+                }
+            },
+            textAreaChanged: function (e) {
+                if (e.value == "") {
+                    func_.hideSaveBtn();
+                    func_.clearTextArea();
+                    func_.resetFileInput();
+                    func_.hideMainSkillsDiv();
+                }
+            }
+        };
+    </script>
+</head>
+
+<body>
+    <input type="file" name="inputfile" id="inputfile" />
+    <div id="saveFileData_div">
+        <span class="textAreaInstructions">Copy and paste all of the below data into your character save file then save
+            that file.</span>
+        <textarea id="saveFileData" class="charTextArea"></textarea>
+    </div>
+    <div id="selected_skill_div">
+    </div>
+    <div id="saveButton_div">
+        <button onclick="func_.saveAndDisplay()">Save</button>
+    </div>
+    <div id="character_skillList_div" style="width: max-content;">
+    </div>
+    <script>
+        window.onload = func_.init();
+    </script>
+</body>
+
+</html>
