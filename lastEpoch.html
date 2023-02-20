@@ -11,7 +11,7 @@
         var character = {};
         var ALL_SKILLS_DATA = le_function.getAllSkillsData();
         var generalSkillData = {
-            "maxSkillXP": 5700000, // This should never need to be changed.
+            "maxSkillXP": 5700000, // This should never need to be changed
             "unspentPoints": 0 // This should never need to be changed
         };
         var rxSpace = new RegExp(" ", "g");
@@ -20,10 +20,12 @@
             init: function () {
                 func_.resetFileInput();
                 func_.clearTextArea();
-                func_.hideSaveBtn();
+                func_.hideGenerateCodeBtn();
+                func_.hideCopyBtn();
                 func_.hideMainSkillsDiv();
                 func_.setTextAreaOnchangeFunction();
                 func_.setInputButtonOnclickFunction();
+                func_.check_if_copy_command_is_supported();
                 var cod = document.getElementById("character_skillList_div");
                 if (cod) {
                     // First, build each Class header
@@ -31,7 +33,8 @@
                         if (asd["class"] != "" && asd["subclass"] == "" && !document.getElementById("class_div_" + asd["class"].toLowerCase().replace(rxSpace, ""))) {
                             var classDiv = document.createElement("div");
                             classDiv.id = "class_div_" + asd["class"].toLowerCase().replace(rxSpace, "");
-                            //classDiv.onclick = function(){ func_.collapseMe(this); }
+                            classDiv.setAttribute("mainclassdiv", asd["class"].toLowerCase().replace(rxSpace, ""));
+                            classDiv.setAttribute("name", "main_class_skill_div");
                             var span = document.createElement("span");
                             span.textContent = asd["class"];
                             span.style.fontWeight = "bold";
@@ -90,50 +93,102 @@
                 // Create an addEventListener for when a character file is loaded
                 func_.readFile();
             },
-            hideSaveBtn: function () {
-                var div = document.getElementById("saveButton_div");
-                if (div) {
-                    div.style.display = "none";
+            hideCopyBtn: function () {
+                var e = document.getElementById("copyButton_div");
+                if (e) {
+                    e.style.display = "none";
                 }
             },
-            showSaveBtn: function () {
-                var div = document.getElementById("saveButton_div");
-                if (div) {
-                    div.style.display = "";
+            showCopyBtn: function () {
+                var e = document.getElementById("copyButton_div");
+                if (e) {
+                    e.style.display = "";
+                }
+                func_.hideInputFileDIV();
+            },
+            hideGenerateCodeBtn: function () {
+                var e = document.getElementById("generateCodeButton_div");
+                if (e) {
+                    e.style.display = "none";
+                }
+            },
+            showGenerateCodeBtn: function () {
+                var e = document.getElementById("generateCodeButton_div");
+                if (e) {
+                    e.style.display = "";
                 }
             },
             hideMainSkillsDiv: function () {
-                var div = document.getElementById("character_skillList_div");
-                if (div) {
-                    div.style.display = "none";
+                var e = document.getElementById("character_skillList_div");
+                if (e) {
+                    e.style.display = "none";
                 }
             },
             showMainSkillsDiv: function () {
-                var div = document.getElementById("character_skillList_div");
-                if (div) {
-                    div.style.display = "";
+                var e = document.getElementById("character_skillList_div");
+                if (e) {
+                    e.style.display = "";
+                }
+            },
+            startOver: function () {
+                func_.hideGenerateCodeBtn();
+                func_.clearTextArea();
+                func_.resetFileInput();
+                func_.hideMainSkillsDiv();
+            },
+            check_if_copy_command_is_supported: function () {
+                var e = document.getElementById("generateCodeFileData");
+                if (e) {
+                    if (!document.queryCommandSupported('copy')) {
+                        e.parentNode.removeChild(e);
+                    }
+                }
+            },
+            selectAndCopyTextArea: function (copyBtn) {
+                function flashCopyMessage(el, msg) {
+                    el.textContent = msg;
+                    el.classList.add("largeFontSize");
+                    el.disabled = true;
+                    setTimeout(function () {
+                        el.textContent = "Copy to Clipboard";
+                        el.classList.remove("largeFontSize");
+                        el.disabled = false;
+                    }, 2000);
+                }
+                try {
+                    var e = document.getElementById("generateCodeFileData");
+                    if (e && e.value != "") {
+                        e.select();
+                        document.execCommand("copy");
+                    }
+                    flashCopyMessage(copyBtn, 'Copied!')
+                } catch (e) {
+                    console && console.log(e);
+                    flashCopyMessage(copyBtn, 'Failed :\'(')
                 }
             },
             clearTextArea: function () {
-                var ta = document.getElementById("saveFileData");
-                if (ta) {
-                    ta.value = "";
-                    ta.style.display = "none";
+                var e = document.getElementById("generateCodeFileData");
+                if (e) {
+                    e.value = "";
+                    e.style.display = "none";
                     func_.hideTextAreaDIV();
                     func_.deleteAllSkillNodeDivs();
+                    func_.hideCopyBtn();
                 }
             },
             setTextArea: function (data) {
-                var ta = document.getElementById("saveFileData");
-                if (ta) {
-                    ta.value = data;
-                    ta.style.display = "";
+                var e = document.getElementById("generateCodeFileData");
+                if (e) {
+                    e.value = data;
+                    e.style.display = "";
                     func_.showTextAreaDIV();
+                    func_.showCopyBtn();
                 }
             },
             deleteAllSkillNodeDivs: function () {
                 var safety = 500;
-                while(document.getElementsByClassName("skillnodesdiv")[0] && --safety > 0){
+                while (document.getElementsByClassName("skillnodesdiv")[0] && --safety > 0) {
                     document.getElementsByClassName("skillnodesdiv")[0].parentNode.removeChild(document.getElementsByClassName("skillnodesdiv")[0]);
                 }
             },
@@ -144,30 +199,69 @@
                 }
             },
             hideTextAreaDIV: function () {
-                var div = document.getElementById("saveFileData_div");
-                if (div) {
-                    div.style.display = "none";
+                var e = document.getElementById("generateCodeFileData_div");
+                if (e) {
+                    e.style.display = "none";
                 }
             },
             showTextAreaDIV: function () {
-                var div = document.getElementById("saveFileData_div");
-                if (div) {
-                    div.style.display = "";
+                var e = document.getElementById("generateCodeFileData_div");
+                if (e) {
+                    e.style.display = "";
+                }
+            },
+            hideInputFileDIV: function () {
+                var e = document.getElementById("inputfile_div");
+                if (e) {
+                    e.style.display = "none";
+                }
+            },
+            showInputFileDIV: function () {
+                var e = document.getElementById("inputfile_div");
+                if (e) {
+                    e.style.display = "";
+                }
+            },
+            removeIrrelevantClassDivs: function (charClass) {
+                var e = document.getElementsByName("main_class_skill_div");
+                var divArray = [];
+                for (var i = 0; i < e.length; i++) {
+                    divArray.push(e[i]);
+                }
+                var safety = 500;
+                while (divArray.length && --safety > 0) {
+                    if (divArray[0].id.toString().indexOf(charClass) < 0) {
+                        document.getElementById(divArray[0].id).parentNode.removeChild(document.getElementById(divArray[0].id));
+                        divArray.splice(0, 1);
+                    } else {
+                        divArray.splice(0, 1);
+                    }
                 }
             },
             readFile: function () {
                 document.getElementById('inputfile').addEventListener('change', function () {
                     var fr = new FileReader();
                     fr.onload = function () {
-                        func_.showSaveBtn();
+                        func_.showGenerateCodeBtn();
                         func_.showMainSkillsDiv();
+                        func_.showClassSkillDiv();
+                        func_.hideInputFileDIV();
+                        var charClass = false;
                         character = {};
                         fileDataPlaceholder = fr.result.toString();
                         character = JSON.parse(fileDataPlaceholder.split('EPOCH')[1]);
+                        if (!func_.dataIsValid(character)) {
+                            alert("The data is either corrupt or you picked a non-character save file.");
+                            location.reload();
+                            return;
+                        }
                         character.savedSkillTrees.forEach(function (fileSkillTree) {
                             if (fileSkillTree.treeID && fileSkillTree.treeID != "") {
                                 ALL_SKILLS_DATA.forEach(function (asd) {
                                     if (asd.treeID == fileSkillTree.treeID) {
+                                        if (!charClass) {
+                                            charClass = asd["class"].toLowerCase().replace(rxSpace, "");
+                                        }
                                         var skill_DIV = document.getElementById("class_" + asd["class"].toLowerCase().replace(rxSpace, "") + "_baseskill_" + asd.tag.toLowerCase().replace(rxTagUS, "") + "_" + asd.treeID);
                                         if (skill_DIV) {
                                             skill_DIV.children[0].classList.add("activeSkill");
@@ -185,6 +279,9 @@
                                 });
                             }
                         });
+                        if (charClass) {
+                            func_.removeIrrelevantClassDivs(charClass);
+                        }
                     }
                     fr.readAsText(this.files[0]);
                 })
@@ -333,7 +430,19 @@
                     }
                 }
             },
-            saveAndDisplay: function () {
+            hideClassSkillDiv: function () {
+                document.getElementsByName("main_class_skill_div")[0].style.display = "none";
+            },
+            showClassSkillDiv: function () {
+                document.getElementsByName("main_class_skill_div")[0].style.display = "";
+            },
+            dataIsValid: function (data) {
+                if (data.characterName && data.level && data.currentExp && data.savedSkillTrees) {
+                    return true;
+                }
+                return false;
+            },
+            generateCodeAndDisplay: function () {
                 var character_skillList_div = document.getElementById("character_skillList_div");
                 if (character_skillList_div) {
                     var csdInputs = character_skillList_div.getElementsByTagName("input");
@@ -371,29 +480,33 @@
                             }
                         }
                     }
-                    func_.setTextArea("EPOCH" + JSON.stringify(character));
+                    if (func_.dataIsValid(character)) {
+                        func_.setTextArea("EPOCH" + JSON.stringify(character));
+                        func_.showCopyBtn();
+                        func_.hideGenerateCodeBtn();
+                        func_.hideClassSkillDiv();
+                    } else {
+                        alert("The data is either corrupt or you picked a non-character save file.");
+                        location.reload();
+                    }
                 }
             },
             setTextAreaOnchangeFunction: function () {
-                var ta = document.getElementById("saveFileData");
-                if (ta) {
-                    ta.onchange = function () { func_.textAreaChanged(this); };
+                var e = document.getElementById("generateCodeFileData");
+                if (e) {
+                    e.onchange = function () { func_.textAreaChanged(this); };
                 }
             },
             setInputButtonOnclickFunction: function () {
                 var e = document.getElementById("inputfile");
                 if (e) {
-                    e.onclick = function () {
-                        func_.hideSaveBtn();
-                        func_.clearTextArea();
-                        func_.resetFileInput();
-                        func_.hideMainSkillsDiv();
-                    };
+                    e.onclick = function () { func_.startOver(); };
                 }
             },
             textAreaChanged: function (e) {
                 if (e.value == "") {
-                    func_.hideSaveBtn();
+                    func_.hideGenerateCodeBtn();
+                    func_.hideCopyBtn();
                     func_.clearTextArea();
                     func_.resetFileInput();
                     func_.hideMainSkillsDiv();
@@ -404,16 +517,23 @@
 </head>
 
 <body>
-    <input type="file" name="inputfile" id="inputfile" />
-    <div id="saveFileData_div">
-        <span class="textAreaInstructions">Copy and paste all of the below data into your character save file then save
+    <div id="inputfile_div">
+        <input type="file" name="inputfile" id="inputfile" />
+    </div>
+    <div id="generateCodeFileData_div">
+        <span class="textAreaInstructions">Click "Copy to Clipboard" button then paste into your character save file,
+            then save that file
             that file.</span>
-        <textarea id="saveFileData" class="charTextArea"></textarea>
+        <textarea readonly="readonly" id="generateCodeFileData" class="charTextArea"></textarea>
     </div>
     <div id="selected_skill_div">
     </div>
-    <div id="saveButton_div">
-        <button onclick="func_.saveAndDisplay()">Save</button>
+    <div id="copyButton_div" style="text-align: right;">
+        <button onclick="location.reload();">Reload</button>
+        <button class="highlight-copy-btn" onclick="func_.selectAndCopyTextArea(this)">Copy to Clipboard</button>
+    </div>
+    <div id="generateCodeButton_div">
+        <button onclick="func_.generateCodeAndDisplay()">Generate Code</button>
     </div>
     <div id="character_skillList_div" style="width: max-content;">
     </div>
