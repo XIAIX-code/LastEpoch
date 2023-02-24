@@ -254,19 +254,25 @@
                 document.getElementById('inputfile').addEventListener('change', function () {
                     var fr = new FileReader();
                     fr.onload = function () {
+                        character = {};
+                        fileDataPlaceholder = fr.result.toString();
+                        try {
+                            character = JSON.parse(fileDataPlaceholder.split('EPOCH')[1]);
+                            if (!func_.dataIsValid(character)) {
+                                alert("The data is either corrupt or you picked a non-character save file.");
+                                location.reload();
+                                return;
+                            }
+                        } catch (err) {
+                            alert("The data is either corrupt or you picked a non-character save file.");
+                            location.reload();
+                            return;
+                        }
                         func_.showGenerateCodeBtn();
                         func_.showMainSkillsDiv();
                         func_.showClassSkillDiv();
                         func_.hideInputFileDIV();
                         var charClass = false;
-                        character = {};
-                        fileDataPlaceholder = fr.result.toString();
-                        character = JSON.parse(fileDataPlaceholder.split('EPOCH')[1]);
-                        if (!func_.dataIsValid(character)) {
-                            alert("The data is either corrupt or you picked a non-character save file.");
-                            location.reload();
-                            return;
-                        }
                         // Character skills
                         character.savedSkillTrees.forEach(function (fileSkillTree) {
                             if (fileSkillTree.treeID && fileSkillTree.treeID != "") {
@@ -639,7 +645,7 @@
                 }
 
                 // Now validate and display it
-                if (func_.dataIsValid(character)) {
+                if (func_.dataIsValid(character)) { // One last check for sanity reason :/
                     func_.setTextArea("EPOCH" + JSON.stringify(character));
                     func_.showCopyBtn();
                     func_.hideGenerateCodeBtn();
@@ -681,6 +687,12 @@
         <tr id="menu_tr">
             <td colspan="3">
                 <div id="inputfile_div">
+                    <div>Navigate to your Last Epoch character save folder and choose the character file you want to
+                        edit:</div>
+                    <div class="fileLocationDiv">(typically located:
+                        <pre
+                            style="display: inline;">C:\Users\&lt;USERNAME&gt;\AppData\LocalLow\Eleventh Hour Games\Last Epoch\Saves</pre>
+                    </div>
                     <input type="file" name="inputfile" id="inputfile" />
                 </div>
                 <div id="generateCodeFileData_div">
