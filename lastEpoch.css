@@ -102,10 +102,6 @@ input {
 	overflow: visible;
 }
 
-body {
-	/* max-width: 800px; */
-}
-
 .charTextArea {
 	align-items: center;
 	appearance: none;
