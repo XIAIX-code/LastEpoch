@@ -154,6 +154,7 @@
                         el.textContent = "Copy to Clipboard";
                         el.classList.remove("largeFontSize");
                         el.disabled = false;
+                        func_.deleteAllSkillNodeDivs();
                     }, 2000);
                 }
                 try {
@@ -189,8 +190,10 @@
             },
             deleteAllSkillNodeDivs: function () {
                 var safety = 500;
-                while (document.getElementsByClassName("skillnodesdiv")[0] && --safety > 0) {
-                    document.getElementsByClassName("skillnodesdiv")[0].parentNode.removeChild(document.getElementsByClassName("skillnodesdiv")[0]);
+                var div = document.getElementsByClassName("skillnodesdiv")[0];
+                while (div && --safety > 0) {
+                    div.parentNode.removeChild(div);
+                    div = document.getElementsByClassName("skillnodesdiv")[0];
                 }
             },
             resetFileInput: function () {
@@ -331,7 +334,7 @@
                                         mastery.forEach(function (M) {
                                             if (!pTable.id || pTable.id == "") {
                                                 pTable.id = "passives_table_" + M.masteryID + "";
-                                                
+
                                                 // var pTblIconDiv = document.createElement("div");
                                                 // pTblIconDiv.classList.add("icons");
                                                 // pTblIconDiv.classList.add("icons-rogue-0");
@@ -341,8 +344,8 @@
                                                 // https://stackoverflow.com/questions/74048912/changes-to-a-parent-elements-textcontent-causes-the-child-to-delete
                                                 var tmpSpan = document.createElement("span");
                                                 tmpSpan.textContent = M.masteryName.substr(0, 1).toUpperCase() + M.masteryName.substr(1);
-                                                masteryHeaderTD.appendChild(tmpSpan); 
-                                                
+                                                masteryHeaderTD.appendChild(tmpSpan);
+
                                             }
                                             pTblTR = document.createElement("tr");
 
@@ -420,6 +423,12 @@
                             p.children[i].style.display = "none";
                         }
                     }
+                }
+            },
+            deleteWorkTR: function () {
+                var e = document.getElementById("work_tr");
+                if (e) {
+                    e.parentNode.removeChild(e);
                 }
             },
             maxAllPoints: function (asd, fileSkillTree) {
@@ -544,10 +553,16 @@
                 }
             },
             hideClassSkillDiv: function () {
-                document.getElementsByName("main_class_skill_div")[0].style.display = "none";
+                var e = document.getElementsByName("main_class_skill_div")[0];
+                if (e) {
+                    e.style.display = "none";
+                }
             },
             showClassSkillDiv: function () {
-                document.getElementsByName("main_class_skill_div")[0].style.display = "";
+                var e = document.getElementsByName("main_class_skill_div")[0];
+                if (e) {
+                    e.style.display = "";
+                }
             },
             hidePassivesDiv: function () {
                 var e = document.getElementById("passives_div");
@@ -628,8 +643,9 @@
                     func_.setTextArea("EPOCH" + JSON.stringify(character));
                     func_.showCopyBtn();
                     func_.hideGenerateCodeBtn();
-                    func_.hideClassSkillDiv();
-                    func_.hidePassivesDiv();
+                    //func_.hideClassSkillDiv();
+                    //func_.hidePassivesDiv();
+                    func_.deleteWorkTR();
                 } else {
                     alert("The data is either corrupt or you picked a non-character save file.");
                     location.reload();
@@ -662,7 +678,7 @@
 
 <body>
     <table>
-        <tr>
+        <tr id="menu_tr">
             <td colspan="3">
                 <div id="inputfile_div">
                     <input type="file" name="inputfile" id="inputfile" />
@@ -685,7 +701,7 @@
                 <hr />
             </td>
         </tr>
-        <tr>
+        <tr id="work_tr">
             <td style="display: block;">
                 <div id="selected_skill_div"></div>
                 <div id="character_skillList_div" style="width: max-content;"></div>
