@@ -23,7 +23,7 @@
 }
 
 .skillPointTable tr:nth-child(even) {
-	background: #dadada;
+	background: #ebebeb;
 }
 
 .pointInput {
@@ -177,4 +177,23 @@ input {
 	width: 20px;
 	background-color: #dadada;
 	border-radius: 10px;
+}
+
+.icons {
+	background-image: url('assets/image_matrix.webp');
+}
+
+.icons-rogue-0 {
+	background-position: -387px -129px;
+	width: 128px;
+	height: 128px;
+}
+
+.class-icon {
+	z-index: 2;
+	position: absolute;
+	left: 0;
+	top: 0;
+	width: 100%;
+	height: 100%;
 }

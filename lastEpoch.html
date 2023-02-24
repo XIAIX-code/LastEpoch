@@ -312,6 +312,7 @@
                                         var masteryHeaderTD = document.createElement("td");
                                         masteryHeaderTD.colSpan = "3";
                                         masteryHeaderTD.classList.add("passiveMasteryHeader");
+
                                         masteryHeaderTR.appendChild(masteryHeaderTD);
                                         pTable.appendChild(masteryHeaderTR);
 
@@ -330,7 +331,18 @@
                                         mastery.forEach(function (M) {
                                             if (!pTable.id || pTable.id == "") {
                                                 pTable.id = "passives_table_" + M.masteryID + "";
-                                                masteryHeaderTD.textContent = M.masteryName.substr(0, 1).toUpperCase() + M.masteryName.substr(1);
+                                                
+                                                // var pTblIconDiv = document.createElement("div");
+                                                // pTblIconDiv.classList.add("icons");
+                                                // pTblIconDiv.classList.add("icons-rogue-0");
+                                                // masteryHeaderTD.appendChild(pTblIconDiv);
+
+                                                // Why we can't just use masteryHeaderTD.textContent = 
+                                                // https://stackoverflow.com/questions/74048912/changes-to-a-parent-elements-textcontent-causes-the-child-to-delete
+                                                var tmpSpan = document.createElement("span");
+                                                tmpSpan.textContent = M.masteryName.substr(0, 1).toUpperCase() + M.masteryName.substr(1);
+                                                masteryHeaderTD.appendChild(tmpSpan); 
+                                                
                                             }
                                             pTblTR = document.createElement("tr");
 
