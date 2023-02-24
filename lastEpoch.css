@@ -9,13 +9,13 @@
 
 .textAreaInstructions {
 	font-weight: bold;
-	float: right;
 	padding: 30px;
 }
 
 .skillnodesdiv {
 	border: 1px solid red;
 	padding: 5px;
+	float: right;
 }
 
 .pointError {
@@ -103,7 +103,7 @@ input {
 }
 
 body {
-	max-width: 800px;
+	/* max-width: 800px; */
 }
 
 .charTextArea {
@@ -144,10 +144,41 @@ body {
 	display: flex;
 	border: 2px solid #0060df;
 }
+
 #copyButton_div {
-	text-align: right;
 	margin-top: 10px;
+	text-align: center;
 }
+
 .largeFontSize {
 	font-size: large;
+}
+
+.smallMaxBtn {
+	width: auto !important;
+	padding: initial !important;
+	color: initial !important;
+	transition: none !important;
+}
+
+.passiveMasteryHeader {
+	text-align: center;
+	border: 1px solid;
+	padding: 3px;
+	background-color: #faebd7;
+}
+
+.passivesDiv {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr) minmax(0, 1fr);
+	grid-column-gap: 15px;
+	align-items: start;
+	top: 80px;
+	position: absolute;
+}
+
+.seperatorTD {
+	width: 20px;
+	background-color: #dadada;
+	border-radius: 10px;
 }

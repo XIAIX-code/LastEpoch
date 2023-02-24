@@ -10,6 +10,7 @@
     <script type="text/javascript">
         var character = {};
         var ALL_SKILLS_DATA = le_function.getAllSkillsData();
+        var PASSIVES = le_function.getAllPassivesData();
         var generalSkillData = {
             "maxSkillXP": 5700000, // This should never need to be changed
             "unspentPoints": 0 // This should never need to be changed
@@ -238,6 +239,14 @@
                     }
                 }
             },
+            populatePassivesTable: function () {
+                character.savedCharacterTree.nodeIDs.forEach(function (passiveNode, passiveIndex) {
+                    var input = document.getElementById("passiveinput_" + passiveNode + "");
+                    if (input) {
+                        input.value = character.savedCharacterTree.nodePoints[passiveIndex];
+                    }
+                });
+            },
             readFile: function () {
                 document.getElementById('inputfile').addEventListener('change', function () {
                     var fr = new FileReader();
@@ -255,6 +264,7 @@
                             location.reload();
                             return;
                         }
+                        // Character skills
                         character.savedSkillTrees.forEach(function (fileSkillTree) {
                             if (fileSkillTree.treeID && fileSkillTree.treeID != "") {
                                 ALL_SKILLS_DATA.forEach(function (asd) {
@@ -281,6 +291,88 @@
                         });
                         if (charClass) {
                             func_.removeIrrelevantClassDivs(charClass);
+                        }
+
+                        // Character passives
+                        var pdiv = document.getElementById("passives_div");
+                        if (pdiv) {
+                            // Clear out anything that might be there.
+                            while (pdiv.children.length) {
+                                pdiv.removeChild(pdiv.children[0]);
+                            }
+
+
+                            PASSIVES.forEach(function (passive) {
+                                if (character.characterClass == passive.baseClassID) {
+                                    passive.masteries.forEach(function (mastery) {
+                                        var pTable = document.createElement("table");
+                                        pTable.classList.add("skillPointTable");
+
+                                        var masteryHeaderTR = document.createElement("tr");
+                                        var masteryHeaderTD = document.createElement("td");
+                                        masteryHeaderTD.colSpan = "3";
+                                        masteryHeaderTD.classList.add("passiveMasteryHeader");
+                                        masteryHeaderTR.appendChild(masteryHeaderTD);
+                                        pTable.appendChild(masteryHeaderTR);
+
+                                        var pTblTR = document.createElement("tr");
+                                        var pTblTH = document.createElement("th");
+                                        pTblTH.textContent = "Passive";
+                                        pTblTR.appendChild(pTblTH);
+                                        pTblTH = document.createElement("th");
+                                        pTblTH.textContent = "Points";
+                                        pTblTR.appendChild(pTblTH);
+                                        pTblTH = document.createElement("th");
+                                        pTblTH.textContent = "Max";
+                                        pTblTR.appendChild(pTblTH);
+                                        pTable.appendChild(pTblTR);
+
+                                        mastery.forEach(function (M) {
+                                            if (!pTable.id || pTable.id == "") {
+                                                pTable.id = "passives_table_" + M.masteryID + "";
+                                                masteryHeaderTD.textContent = M.masteryName.substr(0, 1).toUpperCase() + M.masteryName.substr(1);
+                                            }
+                                            pTblTR = document.createElement("tr");
+
+                                            // Passive
+                                            pTblTD = document.createElement("td");
+                                            pTblTD.textContent = M.nodeNameVerbos;
+                                            pTblTR.appendChild(pTblTD);
+
+                                            // Points
+                                            pTblTD = document.createElement("td");
+                                            var pTblINPUT = document.createElement("input");
+                                            pTblINPUT.id = "passiveinput_" + M.nodeID + "";
+                                            pTblINPUT.type = "text";
+                                            pTblINPUT.classList.add("pointInput");
+                                            pTblINPUT.setAttribute("nodename", M.nodeName);
+                                            pTblINPUT.setAttribute("nodeid", M.nodeID);
+                                            pTblINPUT.setAttribute("masteryid", M.masteryID);
+                                            pTblINPUT.setAttribute("maxvalue", M.nodeMax);
+                                            pTblINPUT.value = M.nodePoints;
+                                            pTblTD.appendChild(pTblINPUT);
+                                            // Max button
+                                            pTblMaxBtn = document.createElement("button");
+                                            pTblMaxBtn.setAttribute("nodeid", M.nodeID);
+                                            pTblMaxBtn.textContent = "max";
+                                            pTblMaxBtn.classList.add("smallMaxBtn");
+                                            pTblMaxBtn.onclick = function () { func_.maxThisPassivePoint(this); };
+                                            pTblTD.appendChild(pTblMaxBtn);
+                                            pTblTR.appendChild(pTblTD);
+
+                                            // Max
+                                            pTblTD = document.createElement("td");
+                                            pTblTD.textContent = M.nodeMax;
+                                            pTblTR.appendChild(pTblTD);
+
+                                            // Put the TR into the table
+                                            pTable.appendChild(pTblTR);
+                                        });
+                                        pdiv.appendChild(pTable);
+                                    });
+                                }
+                            });
+                            func_.populatePassivesTable();
                         }
                     }
                     fr.readAsText(this.files[0]);
@@ -340,6 +432,15 @@
                         INPUT.dispatchEvent(new Event('change', { 'bubbles': true }));
                     }
                 });
+            },
+            maxThisPassivePoint: function (btn) {
+                if (btn.previousSibling.id == "passiveinput_" + btn.getAttribute("nodeid")) {
+                    if (parseInt(btn.previousSibling.value, 10) == parseInt(btn.previousSibling.getAttribute("maxvalue"), 10)) {
+                        btn.previousSibling.value = 0;
+                    } else {
+                        btn.previousSibling.value = parseInt(btn.previousSibling.getAttribute("maxvalue"), 10);
+                    }
+                }
             },
             toggleSkillEdit: function (skill_DIV, asd, fileSkillTree) {
                 var skillNodesDIV = document.getElementById("skillnodesdiv_" + asd.treeID);
@@ -436,6 +537,18 @@
             showClassSkillDiv: function () {
                 document.getElementsByName("main_class_skill_div")[0].style.display = "";
             },
+            hidePassivesDiv: function () {
+                var e = document.getElementById("passives_div");
+                if (e) {
+                    e.style.display = "none";
+                }
+            },
+            showPassivesDiv: function () {
+                var e = document.getElementById("passives_div");
+                if (e) {
+                    e.style.display = "grid";
+                }
+            },
             dataIsValid: function (data) {
                 if (data.characterName && data.level && data.currentExp && data.savedSkillTrees) {
                     return true;
@@ -443,10 +556,11 @@
                 return false;
             },
             generateCodeAndDisplay: function () {
+                var i = 0;
                 var character_skillList_div = document.getElementById("character_skillList_div");
                 if (character_skillList_div) {
                     var csdInputs = character_skillList_div.getElementsByTagName("input");
-                    for (var i = 0; i < csdInputs.length; i++) {
+                    for (i = 0; i < csdInputs.length; i++) {
                         if (csdInputs[i].hasAttribute("treeid") && csdInputs[i].hasAttribute("nodeid")) {
                             var nodeFound = false;
                             character.savedSkillTrees.forEach(function (fileSkillTree) {
@@ -480,15 +594,33 @@
                             }
                         }
                     }
-                    if (func_.dataIsValid(character)) {
-                        func_.setTextArea("EPOCH" + JSON.stringify(character));
-                        func_.showCopyBtn();
-                        func_.hideGenerateCodeBtn();
-                        func_.hideClassSkillDiv();
-                    } else {
-                        alert("The data is either corrupt or you picked a non-character save file.");
-                        location.reload();
+                }
+                var passives_div = document.getElementById("passives_div");
+                if (passives_div) {
+                    var passiveInputs = passives_div.getElementsByTagName("input");
+                    character.savedCharacterTree.nodeIDs = [];
+                    character.savedCharacterTree.nodePoints = [];
+                    for (i = 0; i < passiveInputs.length; i++) {
+                        if (parseInt(passiveInputs[i].value, 10) <= 0) {
+                            continue;
+                        }
+                        if (passiveInputs[i].hasAttribute("nodeid")) {
+                            character.savedCharacterTree.nodeIDs.push(parseInt(passiveInputs[i].getAttribute("nodeid"), 10));
+                            character.savedCharacterTree.nodePoints.push(parseInt(passiveInputs[i].value, 10));
+                        }
                     }
+                }
+
+                // Now validate and display it
+                if (func_.dataIsValid(character)) {
+                    func_.setTextArea("EPOCH" + JSON.stringify(character));
+                    func_.showCopyBtn();
+                    func_.hideGenerateCodeBtn();
+                    func_.hideClassSkillDiv();
+                    func_.hidePassivesDiv();
+                } else {
+                    alert("The data is either corrupt or you picked a non-character save file.");
+                    location.reload();
                 }
             },
             setTextAreaOnchangeFunction: function () {
@@ -517,26 +649,41 @@
 </head>
 
 <body>
-    <div id="inputfile_div">
-        <input type="file" name="inputfile" id="inputfile" />
-    </div>
-    <div id="generateCodeFileData_div">
-        <span class="textAreaInstructions">Click "Copy to Clipboard" button then paste into your character save file,
-            then save that file
-            that file.</span>
-        <textarea readonly="readonly" id="generateCodeFileData" class="charTextArea"></textarea>
-    </div>
-    <div id="selected_skill_div">
-    </div>
-    <div id="copyButton_div" style="text-align: right;">
-        <button onclick="location.reload();">Reload</button>
-        <button class="highlight-copy-btn" onclick="func_.selectAndCopyTextArea(this)">Copy to Clipboard</button>
-    </div>
-    <div id="generateCodeButton_div">
-        <button onclick="func_.generateCodeAndDisplay()">Generate Code</button>
-    </div>
-    <div id="character_skillList_div" style="width: max-content;">
-    </div>
+    <table>
+        <tr>
+            <td colspan="3">
+                <div id="inputfile_div">
+                    <input type="file" name="inputfile" id="inputfile" />
+                </div>
+                <div id="generateCodeFileData_div">
+                    <div class="textAreaInstructions">
+                        Click "Copy to Clipboard" button then paste into your character save file, then save that file
+                        that file.
+                    </div>
+                    <textarea readonly="readonly" id="generateCodeFileData" class="charTextArea"></textarea>
+                </div>
+                <div id="copyButton_div">
+                    <button onclick="location.reload();">Reload</button>
+                    <button class="highlight-copy-btn" onclick="func_.selectAndCopyTextArea(this)">Copy to
+                        Clipboard</button>
+                </div>
+                <div id="generateCodeButton_div">
+                    <button onclick="func_.generateCodeAndDisplay()">Generate Code</button>
+                </div>
+                <hr />
+            </td>
+        </tr>
+        <tr>
+            <td style="display: block;">
+                <div id="selected_skill_div"></div>
+                <div id="character_skillList_div" style="width: max-content;"></div>
+            </td>
+            <td class="seperatorTD"></td>
+            <td>
+                <div id="passives_div" class="passivesDiv"></div>
+            </td>
+        </tr>
+    </table>
     <script>
         window.onload = func_.init();
     </script>

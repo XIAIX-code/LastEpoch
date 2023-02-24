@@ -125,6 +125,88 @@ var le_function = {
 
         return allSkillData;
     },
+    getAllPassivesData: function () {
+        var passives = [];
+        var rogue = {
+            "baseClassID": 4, "baseClassName": "rogue", "masteries": [[{ "nodeID": 1, "nodeName": "guile", "nodeNameVerbos": "Guile", "nodePoints": 0, "nodeMax": 8, "masteryID": 0, "masteryName": "rogue" },
+            { "nodeID": 0, "nodeName": "steady_hand", "nodeNameVerbos": "Steady Hand", "nodePoints": 0, "nodeMax": 8, "masteryID": 0, "masteryName": "rogue" },
+            { "nodeID": 6, "nodeName": "swift_assassin", "nodeNameVerbos": "Swift Assassin", "nodePoints": 0, "nodeMax": 8, "masteryID": 0, "masteryName": "rogue" },
+            { "nodeID": 7, "nodeName": "evasion", "nodeNameVerbos": "Evasion", "nodePoints": 0, "nodeMax": 5, "masteryID": 0, "masteryName": "rogue" },
+            { "nodeID": 10, "nodeName": "twin_blade", "nodeNameVerbos": "Twin Blade", "nodePoints": 0, "nodeMax": 1, "masteryID": 0, "masteryName": "rogue" },
+            { "nodeID": 8, "nodeName": "agility", "nodeNameVerbos": "Agility", "nodePoints": 0, "nodeMax": 5, "masteryID": 0, "masteryName": "rogue" },
+            { "nodeID": 9, "nodeName": "dodge_and_parry", "nodeNameVerbos": "Dodge and Parry", "nodePoints": 0, "nodeMax": 5, "masteryID": 0, "masteryName": "rogue" },
+            { "nodeID": 12, "nodeName": "lethal_cadence", "nodeNameVerbos": "Lethal Cadence", "nodePoints": 0, "nodeMax": 5, "masteryID": 0, "masteryName": "rogue" },
+            { "nodeID": 13, "nodeName": "poison_tipped", "nodeNameVerbos": "Poison Tipped", "nodePoints": 0, "nodeMax": 8, "masteryID": 0, "masteryName": "rogue" },
+            { "nodeID": 14, "nodeName": "sapping_strikes", "nodeNameVerbos": "Sapping Strikes", "nodePoints": 0, "nodeMax": 4, "masteryID": 0, "masteryName": "rogue" },
+            { "nodeID": 11, "nodeName": "duellist", "nodeNameVerbos": "Duellist", "nodePoints": 0, "nodeMax": 8, "masteryID": 0, "masteryName": "rogue" },
+            { "nodeID": 15, "nodeName": "critical_precision", "nodeNameVerbos": "Critical Precision", "nodePoints": 0, "nodeMax": 8, "masteryID": 0, "masteryName": "rogue" },
+            { "nodeID": 16, "nodeName": "disembowel", "nodeNameVerbos": "Disembowel", "nodePoints": 0, "nodeMax": 5, "masteryID": 0, "masteryName": "rogue" },
+            { "nodeID": 17, "nodeName": "coated_blades", "nodeNameVerbos": "Coated Blades", "nodePoints": 0, "nodeMax": 8, "masteryID": 0, "masteryName": "rogue" },
+            { "nodeID": 18, "nodeName": "thiefguard", "nodeNameVerbos": "Thiefguard", "nodePoints": 0, "nodeMax": 8, "masteryID": 0, "masteryName": "rogue" }],
+            [{ "nodeID": 2, "nodeName": "flow", "nodeNameVerbos": "Flow", "nodePoints": 0, "nodeMax": 5, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 49, "nodeName": "pursuit", "nodeNameVerbos": "Pursuit", "nodePoints": 0, "nodeMax": 8, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 50, "nodeName": "cloak_of_shadows", "nodeNameVerbos": "Cloak of Shadows", "nodePoints": 0, "nodeMax": 8, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 53, "nodeName": "skiasynthesis", "nodeNameVerbos": "Skiasynthesis", "nodePoints": 0, "nodeMax": 6, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 51, "nodeName": "blood_serpents_blades", "nodeNameVerbos": "Blood Serpent's Blades", "nodePoints": 0, "nodeMax": 10, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 52, "nodeName": "once", "nodeNameVerbos": "Once", "nodePoints": 0, "nodeMax": 8, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 54, "nodeName": "rhythm", "nodeNameVerbos": "Rhythm", "nodePoints": 0, "nodeMax": 5, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 55, "nodeName": "scarlet_stream", "nodeNameVerbos": "Scarlet Stream", "nodePoints": 0, "nodeMax": 8, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 56, "nodeName": "shroud_of_dusk", "nodeNameVerbos": "Shroud of Dusk", "nodePoints": 0, "nodeMax": 8, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 57, "nodeName": "pulse", "nodeNameVerbos": "Pulse", "nodePoints": 0, "nodeMax": 1, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 58, "nodeName": "veil_of_night", "nodeNameVerbos": "Veil of Night", "nodePoints": 0, "nodeMax": 5, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 59, "nodeName": "tempo", "nodeNameVerbos": "Tempo", "nodePoints": 0, "nodeMax": 5, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 60, "nodeName": "crimson_shroud", "nodeNameVerbos": "Crimson Shroud", "nodePoints": 0, "nodeMax": 5, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 61, "nodeName": "apostacy", "nodeNameVerbos": "Apostacy", "nodePoints": 0, "nodeMax": 1, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 62, "nodeName": "flash_of_steel", "nodeNameVerbos": "Flash of Steel", "nodePoints": 0, "nodeMax": 8, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 63, "nodeName": "blood_dance", "nodeNameVerbos": "Blood Dance", "nodePoints": 0, "nodeMax": 5, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 64, "nodeName": "asuvons_pact", "nodeNameVerbos": "Asuvon's Pact", "nodePoints": 0, "nodeMax": 6, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 65, "nodeName": "weapons_of_choice", "nodeNameVerbos": "Weapons of Choice", "nodePoints": 0, "nodeMax": 8, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 66, "nodeName": "argent_veil", "nodeNameVerbos": "Argent Veil", "nodePoints": 0, "nodeMax": 10, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 67, "nodeName": "perfection", "nodeNameVerbos": "Perfection", "nodePoints": 0, "nodeMax": 5, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 68, "nodeName": "critical_eye", "nodeNameVerbos": "Critical Eye", "nodePoints": 0, "nodeMax": 5, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 69, "nodeName": "cloaked_reaper", "nodeNameVerbos": "Cloaked Reaper", "nodePoints": 0, "nodeMax": 5, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 70, "nodeName": "confidence", "nodeNameVerbos": "Confidence", "nodePoints": 0, "nodeMax": 5, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 71, "nodeName": "deaths_door", "nodeNameVerbos": "Death's Door", "nodePoints": 0, "nodeMax": 8, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 4, "nodeName": "spell_breaker", "nodeNameVerbos": "Spell Breaker", "nodePoints": 0, "nodeMax": 5, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 72, "nodeName": "hooked_blades", "nodeNameVerbos": "Hooked Blades", "nodePoints": 0, "nodeMax": 5, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 73, "nodeName": "all_in", "nodeNameVerbos": "All In", "nodePoints": 0, "nodeMax": 5, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 74, "nodeName": "shadow_master", "nodeNameVerbos": "Shadow Master", "nodePoints": 0, "nodeMax": 5, "masteryID": 1, "masteryName": "bladedancer" },
+            { "nodeID": 75, "nodeName": "exuberance", "nodeNameVerbos": "Exuberance", "nodePoints": 0, "nodeMax": 5, "masteryID": 1, "masteryName": "bladedancer" }],
+            [{ "nodeID": 20, "nodeName": "assassins_quiver", "nodeNameVerbos": "Assassin's Quiver", "nodePoints": 0, "nodeMax": 5, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 21, "nodeName": "focus_fire", "nodeNameVerbos": "Focus Fire", "nodePoints": 0, "nodeMax": 8, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 3, "nodeName": "draining_arrows", "nodeNameVerbos": "Draining Arrows", "nodePoints": 0, "nodeMax": 8, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 22, "nodeName": "concentration", "nodeNameVerbos": "Concentration", "nodePoints": 0, "nodeMax": 8, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 23, "nodeName": "missile_mastery", "nodeNameVerbos": "Missile Mastery", "nodePoints": 0, "nodeMax": 10, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 24, "nodeName": "elemental_arrows", "nodeNameVerbos": "Elemental Arrows", "nodePoints": 0, "nodeMax": 8, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 25, "nodeName": "wound_maker", "nodeNameVerbos": "Wound Maker", "nodePoints": 0, "nodeMax": 10, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 26, "nodeName": "prolonged_demise", "nodeNameVerbos": "Prolonged Demise", "nodePoints": 0, "nodeMax": 10, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 27, "nodeName": "storm_fletcher", "nodeNameVerbos": "Storm Fletcher", "nodePoints": 0, "nodeMax": 8, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 28, "nodeName": "meditation", "nodeNameVerbos": "Meditation", "nodePoints": 0, "nodeMax": 8, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 29, "nodeName": "siege_quiver", "nodeNameVerbos": "Siege Quiver", "nodePoints": 0, "nodeMax": 3, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 30, "nodeName": "heightened_senses", "nodeNameVerbos": "Heightened Senses", "nodePoints": 0, "nodeMax": 5, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 31, "nodeName": "reflection", "nodeNameVerbos": "Reflection", "nodePoints": 0, "nodeMax": 5, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 32, "nodeName": "elemental_barrage", "nodeNameVerbos": "Elemental Barrage", "nodePoints": 0, "nodeMax": 2, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 34, "nodeName": "thiefs_quiver", "nodeNameVerbos": "Thief's Quiver", "nodePoints": 0, "nodeMax": 10, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 33, "nodeName": "arrow_storm", "nodeNameVerbos": "Arrow Storm", "nodePoints": 0, "nodeMax": 6, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 76, "nodeName": "barbed_arrows", "nodeNameVerbos": "Barbed Arrows", "nodePoints": 0, "nodeMax": 10, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 35, "nodeName": "fire_and_steel", "nodeNameVerbos": "Fire and Steel", "nodePoints": 0, "nodeMax": 8, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 39, "nodeName": "sharpshooter", "nodeNameVerbos": "Sharpshooter", "nodePoints": 0, "nodeMax": 5, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 36, "nodeName": "covering_fire", "nodeNameVerbos": "Covering Fire", "nodePoints": 0, "nodeMax": 10, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 37, "nodeName": "snipers_gambit", "nodeNameVerbos": "Sniper's Gambit", "nodePoints": 0, "nodeMax": 6, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 38, "nodeName": "poison_tipped_arrows", "nodeNameVerbos": "Poison Tipped Arrows", "nodePoints": 0, "nodeMax": 10, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 41, "nodeName": "barrage_of_pain", "nodeNameVerbos": "Barrage of Pain", "nodePoints": 0, "nodeMax": 5, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 40, "nodeName": "ethereal_arrows", "nodeNameVerbos": "Ethereal Arrows", "nodePoints": 0, "nodeMax": 10, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 44, "nodeName": "death_from_afar", "nodeNameVerbos": "Death from Afar", "nodePoints": 0, "nodeMax": 5, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 42, "nodeName": "rain_of_arrows", "nodeNameVerbos": "Rain of Arrows", "nodePoints": 0, "nodeMax": 4, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 43, "nodeName": "mana_warp", "nodeNameVerbos": "Mana Warp", "nodePoints": 0, "nodeMax": 5, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 46, "nodeName": "perfect_aim", "nodeNameVerbos": "Perfect Aim", "nodePoints": 0, "nodeMax": 5, "masteryID": 2, "masteryName": "marksman" },
+            { "nodeID": 45, "nodeName": "master_archer", "nodeNameVerbos": "Master Archer", "nodePoints": 0, "nodeMax": 2, "masteryID": 2, "masteryName": "marksman" }],]
+        };
+
+        passives.push(rogue);
+
+        return passives;
+    },
     websiteFunction_2: function () {
         /*
         Use the below code in the browser's console for this url:
@@ -212,5 +294,125 @@ var le_function = {
             //console.dir(allSkillData);
             document.write("<textarea>var allSkillData = " + str + ";</textarea>");
         }, 1000);
+    },
+    website_function_to_get_passives: function () {
+        /*
+        1: Pick the BASE class from the "Class" link here: https://www.lastepochtools.com/planner/
+        2: Click the "Passives (P)" link
+        3: The base class mastery (0) should already be picked (TOP), so run the below code and wait a few seconds.
+        4: Follow the console.warn instructions: COPY THE DATA BELOW and paste it into a file
+        5: Pick the LEFT mastery (1) and RUN the code again
+        6: Follow the console.warn instructions: COPY THE DATA BELOW and replace it into the correct masteries index section []
+        7: Pick the RIGHT mastery (2) and RUN the code again
+        8: Follow the console.warn instructions: COPY THE DATA BELOW and replace it into the correct masteries index section []
+        9: Pick the BOTTOM mastery (3) and RUN the code again
+        10: Follow the console.warn instructions: COPY THE DATA BELOW and replace it into the correct masteries index section []
+        11: Copy all the data from where you've been pasting and apply it as necessary in the getAllPassivesData function within this lastEpoch.js file
+        */
+        console.clear();
+        var passives = [];
+        var obj = {};
+        var baseClassID = 0;
+        var baseClassName = false;
+        var masteries = [[], [], [], []];
+        var panelLeft = document.getElementsByClassName("passives-panel-left")[0];
+        var panelRight = document.getElementsByClassName("passives-panel-right")[0];
+        var rxSpace = new RegExp(" ", "g");
+        var rxApost = new RegExp("'", "g");
+        // Get the base class ID
+        if (panelLeft) {
+            for (var i = 0; i < panelLeft.children.length; i++) {
+                if (panelLeft.children[i].tagName.toLowerCase() == "div") {
+                    if (panelLeft.children[i].classList.contains("panels_ui")) {
+                        baseClassID = parseInt(panelLeft.children[i].classList[panelLeft.children[i].classList.length - 1].split('-')[3], 10);
+                    }
+                }
+            }
+        }
+        // Get the base class name
+        if (document.getElementsByClassName("player-cls")[0]) {
+            baseClassName = document.getElementsByClassName("player-cls")[0].children[0].textContent.toLowerCase();
+        }
+        if (panelRight) {
+            var masteryName = "";
+            if (panelRight.getElementsByClassName("mastery-name")[0]) {
+                masteryName = panelRight.getElementsByClassName("mastery-name")[0].textContent.toLowerCase().replace(rxSpace, "_").replace(rxApost, "");
+            }
+            var block = panelRight.getElementsByClassName("passive-tree-block")[0];
+            if (block) {
+                var masteryID = parseInt(block.classList[block.classList.length - 1].split('-')[2], 10);
+                var treeNodes = block.getElementsByClassName("tree-nodes")[0];
+                for (var n = 0; n < treeNodes.children.length; n++) {
+                    if (treeNodes.children[n].hasAttribute("node-id")) {
+                        var NODE = treeNodes.children[n];
+                        var mouseenter = new MouseEvent("mouseenter");
+                        NODE.dispatchEvent(mouseenter);
+                    }
+                }
+                setTimeout(function () {
+                    for (var n = 0; n < treeNodes.children.length; n++) {
+                        if (treeNodes.children[n].hasAttribute("node-id")) {
+                            var NODE = treeNodes.children[n];
+                            var mouseleave = new MouseEvent("mouseleave");
+                            var nodeID = parseInt(treeNodes.children[n].getAttribute("node-id"), 10);
+                            var nodeName = "";
+                            var nodeNameVerbos = "";
+                            var DIVS = document.getElementsByTagName("div");
+                            for (var d = 0; d < DIVS.length; d++) {
+                                if (DIVS[d].id && DIVS[d].id.indexOf("tippy-") == 0) {
+                                    var INFO_NODE = DIVS[d].getElementsByClassName("tree-node-name")[0];
+                                    if (INFO_NODE) {
+                                        if (INFO_NODE.hasAttribute("tree_node_id")) {
+                                            var tree_node_id = parseInt(INFO_NODE.getAttribute("tree_node_id"), 10);
+                                            if (nodeID == tree_node_id) {
+                                                nodeName = INFO_NODE.textContent.toLowerCase().replace(rxSpace, "_");
+                                                nodeNameVerbos = INFO_NODE.textContent;
+                                                var nodePoints = 0;
+                                                var nodeMax = parseInt(treeNodes.children[n].getElementsByClassName("tree-node-points")[0].firstElementChild.textContent.split('/')[1], 10);
+                                                var masteryObj = {};
+                                                masteryObj.nodeID = nodeID;
+                                                masteryObj.nodeName = nodeName;
+                                                masteryObj.nodeNameVerbos = nodeNameVerbos;
+                                                masteryObj.nodePoints = nodePoints;
+                                                masteryObj.nodeMax = nodeMax;
+                                                masteryObj.masteryID = masteryID;
+                                                masteryObj.masteryName = masteryName;
+                                                masteries[masteryID].push(masteryObj);
+                                                //console.warn("Pushed masteryObj for: "+nodeName);
+                                                NODE.dispatchEvent(mouseleave);
+                                            }
+                                        }
+                                    } else {
+                                        console.warn("NO INFO_NODE for: " + DIVS[d].id);
+                                    }
+                                }
+                            }
+                        }
+                    }
+                    displayInfo(masteryID);
+                }, 2000);
+            }
+        }
+        function displayInfo(masteryID) {
+            if (baseClassID && baseClassName) {
+                obj.baseClassID = baseClassID;
+                obj.baseClassName = baseClassName;
+                obj.masteries = masteries;
+                passives.push(obj);
+                if (masteryID == 0) {
+                    console.warn("COPY THE DATA BELOW and paste it into a file");
+                    console.info(JSON.stringify(passives));
+                }
+                if (masteryID > 0) {
+                    for (var m = 0; m < masteries.length; m++) {
+                        if (masteries[m].length) {
+                            console.warn("COPY THE DATA BELOW and replace it into the correct masteries index section []");
+                            console.info(JSON.stringify(masteries[m]));
+                        }
+                    }
+                    console.dir(masteries);
+                }
+            }
+        }
     }
 };
