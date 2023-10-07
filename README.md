@@ -19,8 +19,8 @@ Like I said though, I have no/0/zip/natta/none affiliation with him, but I give 
                                         W*A*R*N*I*N*G
                             ************************************
 
-As for me personally, I'm just a hack that is performing DOM manipulation on someone else's website to get
-some base skill data from the game. I then take that data and crudely come up with replacement data for you
+As for me personally, I'm just a hack that is stealing someone else's website data to get game data (since there's 
+no official API (yet)). I then take that data and crudely come up with replacement data for you
 to stuff into your character save file. Does it work?... yeah, but I know there are many ways it could be
 done better, but for an old lazy man like me, this is what I have.
 
@@ -83,10 +83,10 @@ PHASE 1: Load character file
 
     Step 7: As soon as you load the file, pick your skill node points as desired.
 
-    Step 18: All you have to do now is click the "Save" button, then:
-            (a): copy everything in that textarea.
+    Step 8: All you have to do now is click the "Generate Code" button, then:
+            (a): copy everything in that textarea (or click "Copy to Clipboard" button).
             (b): open up your character save file (1CHARACTERSLOT_BETA_1) or whatever it was you settled on
-                 in notepad (or your favorite text editor).
+                 in notepad (or your favorite text editor i.e. Notepad++).
             (c): select/delete everything and PASTE (overwriting) with what you just copied in (a).
             (d): SAVE THE FILE
 -------------------------------------------------------------
