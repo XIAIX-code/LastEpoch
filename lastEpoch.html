@@ -245,7 +245,6 @@
                                     var SKILL = window.LESkillTrees[fileSkillTree.treeID];
                                     var skill_DIV = document.createElement("div");
                                     skill_DIV.id = "skill_" + SKILL.ability;
-                                    //skill_DIV.textContent = window.LEAbilities.abilityList[SKILL.ability]["name"];
                                     skill_DIV.classList.add("skillButton");
                                     skill_DIV.onclick = function () { func_.toggleSkillEdit(skill_DIV, SKILL, fileSkillTree, window.LEAbilities.abilityList[SKILL.ability]); }
                                     // Skill info stuff
@@ -254,7 +253,6 @@
                                         skill_span_ICON.classList.add("skillIcon");
                                         skill_span_ICON.classList.add("icons");
                                         skill_span_ICON.classList.add("icons-r-" + window.LEAbilities.abilityList[SKILL.ability].abilitySprite.split("-")[2]);
-                                        //skill_span_ICON.className = "skillIcon icons icons-r-" + window.LEAbilities.abilityList[SKILL.ability].abilitySprite.split("-")[2];
                                         skill_DIV.insertBefore(skill_span_ICON, skill_DIV.firstChild);
                                     }
                                     var skill_span_NAME = document.createElement("span");
@@ -281,10 +279,7 @@
                             window.LECharTrees.trees.forEach(function (passive) {
                                 if (character.characterClass == passive.characterTree.characterClass.classID) {
                                     var passiveReference = passive.ref;
-                                    //console.dir("passive: (" + passiveReference + ")");
-                                    //console.dir(passive);
                                     passive.characterTree.characterClass.masteries.forEach(function (mastery, mIdx) {
-
                                         var pTable = document.createElement("table");
                                         pTable.classList.add("skillPointTable");
 
@@ -457,7 +452,6 @@
                                                 outerHTML += '</div>'; // tree-node-card
                                                 // --------------   END   --------------
 
-                                                // if (M.descHTML) {
                                                 var tippyDIV = document.createElement("div");
                                                 tippyDIV.classList.add("tippydiv");
                                                 tippyDIV.style.display = "none";
@@ -530,17 +524,12 @@
             checkMax: function (e, max) {
                 if (isNaN(parseInt(e.value))) {
                     e.value = 0;
-                    //e.classList.add("pointError");
                     alert("not a number, setting value to 0");
-                } //else {
-                // e.classList.remove("pointError");
-                //}
-
+                }
                 if (parseInt(e.value, 10) > parseInt(max, 10)) {
                     e.value = parseInt(max, 10);
                     alert("setting to max");
                 }
-
                 if (parseInt(e.value, 10) < parseInt(max, 10)) {
                     e.classList.add("nonMaxedPoints");
                 } else {
@@ -641,8 +630,6 @@
                         if (node.id == 0) {
                             return;
                         }
-                        //console.dir(SKILL);
-                        //fstNode_found = false;
                         var TR = document.createElement("tr");
                         var INPUT = document.createElement("input");
                         INPUT.id = "input_" + SKILL.ability + "_" + node.nodeName.toLowerCase().replace(rxSpace, "") + "_" + node.id;
@@ -811,8 +798,6 @@
                     func_.setTextArea("EPOCH" + JSON.stringify(character));
                     func_.showCopyBtn();
                     func_.hideGenerateCodeBtn();
-                    //func_.hideClassSkillDiv();
-                    //func_.hidePassivesDiv();
                     func_.deleteWorkTR();
                 } else {
                     alert("The data is either corrupt or you picked a non-character save file.");
@@ -900,7 +885,6 @@
                 <div id="selected_skill_div"></div>
                 <div id="character_skillList_div" style="width: max-content;"></div>
             </td>
-            <!-- <td class="seperatorTD"></td> -->
             <td id="passives_div_TD">
                 <div id="passives_div" class="passivesDiv"></div>
             </td>
