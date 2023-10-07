@@ -28,7 +28,8 @@
                 func_.clearTextArea();
                 func_.hideGenerateCodeBtn();
                 func_.hideCopyBtn();
-                func_.hideMainSkillsDiv();
+                //func_.hideMainSkillsDiv();
+                func_.hide_work_tr();
                 func_.setTextAreaOnchangeFunction();
                 func_.setInputButtonOnclickFunction();
                 func_.check_if_copy_command_is_supported();
@@ -173,6 +174,18 @@
                     e.style.display = "";
                 }
             },
+            hide_work_tr: function () {
+                var e = document.getElementById("work_tr");
+                if (e) {
+                    e.style.display = "none";
+                }
+            },
+            show_work_tr: function () {
+                var e = document.getElementById("work_tr");
+                if (e) {
+                    e.style.display = "";
+                }
+            },
             removeIrrelevantClassDivs: function (charClass) {
                 var e = document.getElementsByName("main_class_skill_div");
                 var divArray = [];
@@ -217,6 +230,7 @@
                         }
                         //console.warn("character (from file): ");
                         //console.dir(character);
+                        func_.show_work_tr();
                         func_.showGenerateCodeBtn();
                         func_.showMainSkillsDiv();
                         func_.showClassSkillDiv();
@@ -231,9 +245,23 @@
                                     var SKILL = window.LESkillTrees[fileSkillTree.treeID];
                                     var skill_DIV = document.createElement("div");
                                     skill_DIV.id = "skill_" + SKILL.ability;
-                                    skill_DIV.textContent = window.LEAbilities.abilityList[SKILL.ability]["name"];
-                                    skill_DIV.classList.add("activeSkill");
-                                    skill_DIV.onclick = function () { func_.toggleSkillEdit(skill_DIV, SKILL, fileSkillTree); }
+                                    //skill_DIV.textContent = window.LEAbilities.abilityList[SKILL.ability]["name"];
+                                    skill_DIV.classList.add("skillButton");
+                                    skill_DIV.onclick = function () { func_.toggleSkillEdit(skill_DIV, SKILL, fileSkillTree, window.LEAbilities.abilityList[SKILL.ability]); }
+                                    // Skill info stuff
+                                    if (window.LEAbilities.abilityList[SKILL.ability].abilitySprite) {
+                                        var skill_span_ICON = document.createElement("span");
+                                        skill_span_ICON.classList.add("skillIcon");
+                                        skill_span_ICON.classList.add("icons");
+                                        skill_span_ICON.classList.add("icons-r-" + window.LEAbilities.abilityList[SKILL.ability].abilitySprite.split("-")[2]);
+                                        //skill_span_ICON.className = "skillIcon icons icons-r-" + window.LEAbilities.abilityList[SKILL.ability].abilitySprite.split("-")[2];
+                                        skill_DIV.insertBefore(skill_span_ICON, skill_DIV.firstChild);
+                                    }
+                                    var skill_span_NAME = document.createElement("span");
+                                    skill_span_NAME.textContent = window.LEAbilities.abilityList[SKILL.ability]["name"];
+                                    skill_span_NAME.classList.add("skillName");
+
+                                    skill_DIV.appendChild(skill_span_NAME);
                                     character_skillList_div.appendChild(skill_DIV);
                                 }
                             }
@@ -573,7 +601,7 @@
                     }
                 }
             },
-            toggleSkillEdit: function (skill_DIV, SKILL, fileSkillTree) {
+            toggleSkillEdit: function (skill_DIV, SKILL, fileSkillTree, SKILL_ABILITY) {
                 var skillNodesDIV = document.getElementById("skillnodesdiv_" + SKILL.ability);
                 var passives_div_TD = document.getElementById("passives_div_TD");
                 var character_skillList_div = document.getElementById("character_skillList_div");
@@ -660,19 +688,20 @@
 
                     skillNodesDIV.appendChild(allMaxDIV);
                     skillNodesDIV.appendChild(tbl);
-                    //skill_DIV.appendChild(skillNodesDIV);
                     character_skillList_div.appendChild(skillNodesDIV);
                     skillNodesDIV.style.display = "none"; // so it triggers to display below
                 }
 
                 if (skillNodesDIV.style.display == "none") {
                     skillNodesDIV.style.display = "";
-                    //passives_div_TD.style.display = "none";
                     func_.hidePassivesDiv();
+                    skill_DIV.classList.remove("skillButton");
+                    skill_DIV.classList.add("activeSkillButton");
                 } else {
                     skillNodesDIV.style.display = "none";
-                    //passives_div_TD.style.display = "";
                     func_.showPassivesDiv();
+                    skill_DIV.classList.remove("activeSkillButton");
+                    skill_DIV.classList.add("skillButton");
                 }
 
                 // Hide all other skillnodesdiv_ divs
@@ -681,6 +710,12 @@
                     if (divs[i].id.indexOf("skillnodesdiv_") == 0) {
                         if (divs[i].id != "skillnodesdiv_" + SKILL.ability) {
                             divs[i].style.display = "none";
+                        }
+                    }
+                    if (divs[i].id.indexOf("skill_") == 0) {
+                        if (divs[i].id != "skill_" + SKILL.ability) {
+                            divs[i].classList.remove("activeSkillButton");
+                            divs[i].classList.add("skillButton");
                         }
                     }
                 }
@@ -808,10 +843,10 @@
         };
     </script>
     <script>
-        /* SKILLS */  //console.warn("LEAbilities:"); console.dir(window.LEAbilities); //console.info(JSON.stringify(window.LEAbilities));
+        /* SKILLS */  console.warn("LEAbilities:"); console.dir(window.LEAbilities); //console.info(JSON.stringify(window.LEAbilities));
         /* PASSIVES */ // console.warn("LECharTrees:"); console.dir(window.LECharTrees); console.info(JSON.stringify(window.LECharTrees));
         // console.warn("LECharTreesUI:"); console.dir(window.LECharTreesUI);
-        /* SKILLS */ //console.warn("LESkillTrees:"); console.dir(window.LESkillTrees); //console.info(JSON.stringify(window.LESkillTrees));
+        /* SKILLS (skill tree with all the data) */ console.warn("LESkillTrees:"); console.dir(window.LESkillTrees); //console.info(JSON.stringify(window.LESkillTrees));
         // console.warn("LESkillTreesUI:"); console.dir(window.LESkillTreesUI);
         // console.warn("LEHUD:"); console.dir(window.LEHUD);
         // console.warn("LETooltipIcons:"); console.dir(window.LETooltipIcons);
@@ -860,10 +895,12 @@
         </tr>
         <tr id="work_tr">
             <td id="skills_div_TD" style="display: block;">
+                <div class="skillsTitleDiv">SKILLS</div>
+                <hr>
                 <div id="selected_skill_div"></div>
                 <div id="character_skillList_div" style="width: max-content;"></div>
             </td>
-            <td class="seperatorTD"></td>
+            <!-- <td class="seperatorTD"></td> -->
             <td id="passives_div_TD">
                 <div id="passives_div" class="passivesDiv"></div>
             </td>
