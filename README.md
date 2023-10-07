@@ -37,9 +37,9 @@ I digress...
 
 How to use this stuff:
 
-==========================================
+=====================================
 PHASE 0: Initially pick your skill(s) in-game
-==========================================
+=====================================
     For this all to work correctly, you need to have the skill(s) you want to use this tool to edit
     UNLOCKED and SPECIALIZED in the game!!
     This is key because this tool is all based off the skillID that exists in your save file.
@@ -53,9 +53,9 @@ Okay, now...
 BE SURE THE GAME IS **NOT** RUNNING!
 By "not running" I mean you are NOT logged into the character select screen, and you are exited to desktop.
 
-==========================================
+=====================================
 PHASE 1: Load character file
-==========================================
+=====================================
     Step 1: I would be remiss if I didn't tell you to BACK UP YOUR PLAYER FILE BEFORE CONTINUING!!!
     Step 2: MAKE SURE YOU FOLLOW STEP 1!!!!
 
