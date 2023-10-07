@@ -3,14 +3,19 @@
 
 <head>
     <meta charset="utf-8">
-    <title>Last Epoch Beta 0.8.5f</title>
+    <title>Last Epoch Beta 0.9.2f</title>
     <style></style>
     <link href="lastEpoch.css" rel="stylesheet" media="all" onload="this.media='all'; this.onload=null;">
+    <link href="styles.css" rel="stylesheet" media="all" onload="this.media='all'; this.onload=null;">
+    <link href="icons.css" rel="stylesheet" media="all" onload="this.media='all'; this.onload=null;">
     <script src="lastEpoch.js"></script>
+
+    <!-- Due to lack of a Last Epoch API, we have to resort to this -->
+    <script src="https://www.lastepochtools.com/data/beta092f/planner/js/120c5f4b6c50656cad06762a28c3d1e2.js"></script>
+    <!-- If the above link ever goes poof, we have it in "assets/Build Planner JS" -->
+
     <script type="text/javascript">
         var character = {};
-        var ALL_SKILLS_DATA = le_function.getAllSkillsData();
-        var PASSIVES = le_function.getAllPassivesData();
         var generalSkillData = {
             "maxSkillXP": 5700000, // This should never need to be changed
             "unspentPoints": 0 // This should never need to be changed
@@ -27,72 +32,14 @@
                 func_.setTextAreaOnchangeFunction();
                 func_.setInputButtonOnclickFunction();
                 func_.check_if_copy_command_is_supported();
-                var cod = document.getElementById("character_skillList_div");
-                if (cod) {
-                    // First, build each Class header
-                    ALL_SKILLS_DATA.forEach(function (asd) {
-                        if (asd["class"] != "" && asd["subclass"] == "" && !document.getElementById("class_div_" + asd["class"].toLowerCase().replace(rxSpace, ""))) {
-                            var classDiv = document.createElement("div");
-                            classDiv.id = "class_div_" + asd["class"].toLowerCase().replace(rxSpace, "");
-                            classDiv.setAttribute("mainclassdiv", asd["class"].toLowerCase().replace(rxSpace, ""));
-                            classDiv.setAttribute("name", "main_class_skill_div");
-                            var span = document.createElement("span");
-                            span.textContent = asd["class"];
-                            span.style.fontWeight = "bold";
-                            span.style.cursor = "pointer";
-                            span.onclick = function () { func_.toggleCollapse(this); }
-                            classDiv.appendChild(span);
-                            cod.appendChild(classDiv);
-                        }
-                    });
-                    // Second, list class base skills
-                    ALL_SKILLS_DATA.forEach(function (asd) {
-                        if (asd["class"] != "" && asd["subclass"] == "") {
-                            var mainClassDiv = document.getElementById("class_div_" + asd["class"].toLowerCase().replace(rxSpace, ""));
-                            if (mainClassDiv) {
-                                var classDiv = document.createElement("div");
-                                classDiv.id = "class_" + asd["class"].toLowerCase().replace(rxSpace, "") + "_baseskill_" + asd.tag.toLowerCase().replace(rxTagUS, "") + "_" + asd.treeID;
-                                classDiv.style.paddingLeft = "20px";
-                                var span = document.createElement("span");
-                                span.textContent = asd["name"];
-                                classDiv.appendChild(span);
-                                mainClassDiv.appendChild(classDiv);
-                            }
-                        }
-                    });
-                    // Third, list subclasses
-                    ALL_SKILLS_DATA.forEach(function (asd) {
-                        if (asd["class"] != "" && asd["subclass"] != "") {
-                            var mainClassDiv = document.getElementById("class_div_" + asd["class"].toLowerCase().replace(rxSpace, ""));
-                            var classSubclassDiv = document.getElementById("class_" + asd["class"].toLowerCase().replace(rxSpace, "") + "_subclass_" + asd["subclass"].toLowerCase().replace(rxSpace, ""));
-                            if (mainClassDiv) {
-
-                                if (!classSubclassDiv) {
-                                    classSubclassDiv = document.createElement("div");
-                                    classSubclassDiv.id = "class_" + asd["class"].toLowerCase().replace(rxSpace, "") + "_subclass_" + asd["subclass"].toLowerCase().replace(rxSpace, "");
-                                    classSubclassDiv.style.paddingLeft = "40px";
-                                    var span = document.createElement("span");
-                                    span.textContent = asd["subclass"];
-                                    span.style.fontWeight = "bold";
-                                    span.style.cursor = "pointer";
-                                    span.onclick = function () { func_.toggleCollapse(this); }
-                                    classSubclassDiv.appendChild(span);
-                                    mainClassDiv.appendChild(classSubclassDiv);
-                                }
-
-                                var classDiv = document.createElement("div");
-                                classDiv.id = "class_" + asd["class"].toLowerCase().replace(rxSpace, "") + "_subclass_" + asd["subclass"].toLowerCase().replace(rxSpace, "") + "_baseskill_" + asd.tag.toLowerCase().replace(rxTagUS, "") + "_" + asd.treeID;
-                                classDiv.style.paddingLeft = "20px";
-                                var span = document.createElement("span");
-                                span.textContent = asd["name"];
-                                classDiv.appendChild(span);
-                                classSubclassDiv.appendChild(classDiv);
-                            }
-                        }
-                    });
-                }
                 // Create an addEventListener for when a character file is loaded
                 func_.readFile();
+            },
+            tripple_N_lineBreaks: function (str) {
+                var regex = /\n\n\n/g;
+                var subst = '<div class="separator"></div>';
+                var result = str.replace(regex, subst);
+                return result;
             },
             hideCopyBtn: function () {
                 var e = document.getElementById("copyButton_div");
@@ -268,34 +215,27 @@
                             location.reload();
                             return;
                         }
+                        //console.warn("character (from file): ");
+                        //console.dir(character);
                         func_.showGenerateCodeBtn();
                         func_.showMainSkillsDiv();
                         func_.showClassSkillDiv();
                         func_.hideInputFileDIV();
                         var charClass = false;
+
                         // Character skills
+                        var character_skillList_div = document.getElementById("character_skillList_div");
                         character.savedSkillTrees.forEach(function (fileSkillTree) {
                             if (fileSkillTree.treeID && fileSkillTree.treeID != "") {
-                                ALL_SKILLS_DATA.forEach(function (asd) {
-                                    if (asd.treeID == fileSkillTree.treeID) {
-                                        if (!charClass) {
-                                            charClass = asd["class"].toLowerCase().replace(rxSpace, "");
-                                        }
-                                        var skill_DIV = document.getElementById("class_" + asd["class"].toLowerCase().replace(rxSpace, "") + "_baseskill_" + asd.tag.toLowerCase().replace(rxTagUS, "") + "_" + asd.treeID);
-                                        if (skill_DIV) {
-                                            skill_DIV.children[0].classList.add("activeSkill");
-                                            skill_DIV.children[0].onclick = function () { func_.toggleSkillEdit(skill_DIV, asd, fileSkillTree); }
-                                        } else {
-                                            skill_DIV = document.getElementById("class_" + asd["class"].toLowerCase().replace(rxSpace, "") + "_subclass_" + asd["subclass"].toLowerCase().replace(rxSpace, "") + "_baseskill_" + asd.tag.toLowerCase().replace(rxTagUS, "") + "_" + asd.treeID);
-                                            if (skill_DIV) {
-                                                skill_DIV.children[0].classList.add("activeSkill");
-                                                skill_DIV.children[0].onclick = function () { func_.toggleSkillEdit(skill_DIV, asd, fileSkillTree); }
-                                            } else {
-                                                console.warn("NO SKILL_DIV_x for " + asd.treeID);
-                                            }
-                                        }
-                                    }
-                                });
+                                if (window.LESkillTrees[fileSkillTree.treeID]) {
+                                    var SKILL = window.LESkillTrees[fileSkillTree.treeID];
+                                    var skill_DIV = document.createElement("div");
+                                    skill_DIV.id = "skill_" + SKILL.ability;
+                                    skill_DIV.textContent = window.LEAbilities.abilityList[SKILL.ability]["name"];
+                                    skill_DIV.classList.add("activeSkill");
+                                    skill_DIV.onclick = function () { func_.toggleSkillEdit(skill_DIV, SKILL, fileSkillTree); }
+                                    character_skillList_div.appendChild(skill_DIV);
+                                }
                             }
                         });
                         if (charClass) {
@@ -310,10 +250,13 @@
                                 pdiv.removeChild(pdiv.children[0]);
                             }
 
+                            window.LECharTrees.trees.forEach(function (passive) {
+                                if (character.characterClass == passive.characterTree.characterClass.classID) {
+                                    var passiveReference = passive.ref;
+                                    //console.dir("passive: (" + passiveReference + ")");
+                                    //console.dir(passive);
+                                    passive.characterTree.characterClass.masteries.forEach(function (mastery, mIdx) {
 
-                            PASSIVES.forEach(function (passive) {
-                                if (character.characterClass == passive.baseClassID) {
-                                    passive.masteries.forEach(function (mastery) {
                                         var pTable = document.createElement("table");
                                         pTable.classList.add("skillPointTable");
 
@@ -337,57 +280,214 @@
                                         pTblTR.appendChild(pTblTH);
                                         pTable.appendChild(pTblTR);
 
-                                        mastery.forEach(function (M) {
-                                            if (!pTable.id || pTable.id == "") {
-                                                pTable.id = "passives_table_" + M.masteryID + "";
+                                        if (!pTable.id || pTable.id == "") {
+                                            pTable.id = "passives_table_" + mIdx + "";
 
-                                                // var pTblIconDiv = document.createElement("div");
-                                                // pTblIconDiv.classList.add("icons");
-                                                // pTblIconDiv.classList.add("icons-rogue-0");
-                                                // masteryHeaderTD.appendChild(pTblIconDiv);
+                                            // Why we can't just use masteryHeaderTD.textContent = 
+                                            // https://stackoverflow.com/questions/74048912/changes-to-a-parent-elements-textcontent-causes-the-child-to-delete
+                                            var tmpSpan = document.createElement("span");
+                                            tmpSpan.textContent = mastery["name"];
+                                            masteryHeaderTD.appendChild(tmpSpan);
+                                        }
+                                        Object.keys(passive.characterTree.nodes).forEach(function (N) {
+                                            var node = passive.characterTree.nodes[N];
+                                            if (node.mastery == mIdx) {
+                                                pTblTR = document.createElement("tr");
 
-                                                // Why we can't just use masteryHeaderTD.textContent = 
-                                                // https://stackoverflow.com/questions/74048912/changes-to-a-parent-elements-textcontent-causes-the-child-to-delete
-                                                var tmpSpan = document.createElement("span");
-                                                tmpSpan.textContent = M.masteryName.substr(0, 1).toUpperCase() + M.masteryName.substr(1);
-                                                masteryHeaderTD.appendChild(tmpSpan);
+                                                // Passive
+                                                pTblTD = document.createElement("td");
+                                                pTblTD.textContent = node.nodeName;
 
+                                                // Oh the joy of getting the Passive tooltips... oi-vey....
+                                                // --------------   BEGIN   --------------
+                                                var dnswpa = false;
+                                                var outerHTML = '<div class="tree-node-card">';
+                                                outerHTML += '<div class="tree-node-description-block">';
+                                                outerHTML += '<div class="tree-node-name" tree_id="';
+                                                outerHTML += passive.characterTree.treeID;
+                                                outerHTML += '" tree_node_id="';
+                                                outerHTML += node.id;
+                                                outerHTML += '">';
+                                                outerHTML += node.nodeName;
+                                                outerHTML += '</div>';
+                                                if (node.description) {
+                                                    outerHTML += '<div class="tree-node-description">';
+                                                    outerHTML += func_.tripple_N_lineBreaks(node.description);
+                                                    if (node.altText) {
+                                                        outerHTML += '<div class="alt-divider"></div>';
+                                                    }
+                                                }
+                                                if (node.altText) {
+                                                    outerHTML += '<div class="alt-text">';
+                                                    outerHTML += func_.tripple_N_lineBreaks(node.altText);
+                                                    outerHTML += '</div>';
+                                                }
+                                                if (node.description) {
+                                                    outerHTML += '</div>';
+                                                }
+                                                var statFound = 0;
+                                                if (node.stats.length) {
+                                                    node.stats.forEach(function (stat) {
+                                                        if (stat.noScaling) {
+                                                            return;
+                                                        }
+                                                        if (++statFound == 1) {
+                                                            outerHTML += '<div class="stats-container">';
+                                                        }
+                                                        outerHTML += '<div class="tree-node-stat">';
+                                                        outerHTML += '<div class="tree-node-stat-icon">';
+                                                        outerHTML += '<div class="icons icons-r-';
+                                                        outerHTML += stat.sprite.split("-")[2];
+                                                        outerHTML += '"></div>'; // icons icons-r-
+                                                        outerHTML += '</div>'; // tree-node-stat-icon
+                                                        outerHTML += '<div class="tree-node-stat-text">';
+                                                        outerHTML += stat.statName;
+                                                        if (stat["value"]) {
+                                                            outerHTML += ': <span class="stat-emphasis">';
+                                                            outerHTML += stat["value"];
+                                                            outerHTML += ' per point</span>';
+                                                        }
+                                                        outerHTML += '</div>'; // tree-node-stat-text
+                                                        outerHTML += '</div>'; // tree-node-stat
+                                                    });
+                                                    if (statFound) {
+                                                        outerHTML += '</div>'; // stats-container
+                                                    }
+                                                }
+
+                                                // Any bonus info?
+                                                var pointsBonusContainer = false;
+                                                if (node.noScalingPointThreshold) {
+                                                    pointsBonusContainer = true;
+                                                    outerHTML += '<div class="point-bonus-container">';
+                                                    outerHTML += '<div class="point-bonus-title">';
+                                                    outerHTML += node.noScalingPointThreshold;
+                                                    outerHTML += ' Point Bonus</div>'; // point-bonus-title
+                                                    if (node.pointBonusDescription) {
+                                                        outerHTML += '<div class="point-bonus-description">';
+                                                        outerHTML += node.pointBonusDescription;
+                                                        outerHTML += '</div>'; // point-bonus-description
+                                                    }
+                                                    if (node.noScalingType && !dnswpa) {
+                                                        outerHTML += '<div class="stats-header">Does not scale with points allocated</div>';
+                                                        dnswpa = true;
+                                                    }
+                                                } else {
+                                                    if (node.pointBonusDescription) {
+                                                        pointsBonusContainer = true;
+                                                        outerHTML += '<div class="point-bonus-container">';
+                                                        outerHTML += '<div class="point-bonus-description">';
+                                                        outerHTML += node.pointBonusDescription;
+                                                        outerHTML += '</div>'; // point-bonus-description
+                                                    }
+                                                    if (node.noScalingType && !dnswpa) {
+                                                        outerHTML += '<div class="stats-header">Does not scale with points allocated</div>';
+                                                        dnswpa = true;
+                                                    }
+                                                }
+                                                //if (pointsBonusContainer) {
+                                                statFound = 0;
+                                                if (node.stats.length) {
+                                                    node.stats.forEach(function (stat) {
+                                                        if (!stat.noScaling) {
+                                                            return;
+                                                        }
+                                                        if (++statFound == 1) {
+                                                            outerHTML += '<div class="stats-container">';
+                                                            if (!dnswpa) {
+                                                                outerHTML += '<div class="stats-header">Does not scale with points allocated</div>';
+                                                                dnswpa = true;
+                                                            }
+                                                        }
+                                                        outerHTML += '<div class="tree-node-stat">';
+                                                        outerHTML += '<div class="tree-node-stat-icon">';
+                                                        outerHTML += '<div class="icons icons-r-';
+                                                        outerHTML += stat.sprite.split("-")[2];
+                                                        outerHTML += '"></div>'; // icons icons-r-
+                                                        outerHTML += '</div>'; // tree-node-stat-icon
+                                                        outerHTML += '<div class="tree-node-stat-text">';
+                                                        outerHTML += stat.statName;
+                                                        if (stat["value"]) {
+                                                            outerHTML += ': <span class="stat-emphasis">';
+                                                            outerHTML += stat["value"];
+                                                            outerHTML += '</span>';
+                                                        }
+                                                        outerHTML += '</div>'; // tree-node-stat-text
+                                                        outerHTML += '</div>'; // tree-node-stat
+                                                    });
+                                                    if (statFound) {
+                                                        outerHTML += '</div>'; // stats-container
+                                                    }
+                                                    //}
+                                                    if (pointsBonusContainer) {
+                                                        outerHTML += '</div>'; // point-bonus-container
+                                                    }
+                                                }
+
+
+                                                outerHTML += '</div>'; // tree-node-description-block
+                                                outerHTML += '</div>'; // tree-node-card
+                                                // --------------   END   --------------
+
+                                                // if (M.descHTML) {
+                                                var tippyDIV = document.createElement("div");
+                                                tippyDIV.classList.add("tippydiv");
+                                                tippyDIV.style.display = "none";
+                                                tippyDIV.id = "tippydiv_" + node.id + "";
+                                                tippyDIV.innerHTML = outerHTML;
+                                                pTblTD.addEventListener("mouseenter", function (e) {
+                                                    tippyDIV.style.display = "";
+                                                });
+                                                pTblTD.addEventListener("mouseleave", function (e) {
+                                                    tippyDIV.style.display = "none";
+                                                });
+                                                pTblTD.addEventListener("mousemove", function (e) {
+                                                    tippyDIV.style.marginLeft = 25 + e.offsetX + "px";
+                                                });
+                                                pTblTD.appendChild(tippyDIV);
+                                                pTblTR.appendChild(pTblTD);
+
+                                                // Points
+                                                pTblTD = document.createElement("td");
+                                                var pTblINPUT = document.createElement("input");
+                                                pTblINPUT.id = "passiveinput_" + node.id + "";
+                                                pTblINPUT.type = "text";
+                                                pTblINPUT.classList.add("pointInput");
+                                                pTblINPUT.setAttribute("nodename", node.nodeName);
+                                                pTblINPUT.setAttribute("nodeid", node.id);
+                                                pTblINPUT.setAttribute("masteryid", mIdx);
+                                                pTblINPUT.setAttribute("maxvalue", node.maxPoints);
+                                                pTblINPUT.value = 0;
+                                                pTblINPUT.addEventListener("wheel", function (e) {
+                                                    if (e.deltaY < 0) { /* Scrolling up */
+                                                        if (parseInt(this.value, 10) < node.maxPoints) {
+                                                            this.value = parseInt(this.value, 10) + 1;
+                                                        }
+                                                    }
+                                                    else if (e.deltaY > 0) { /* Scrolling down */
+                                                        if (parseInt(this.value, 10) > 0) {
+                                                            this.value = parseInt(this.value, 10) - 1;
+                                                        }
+                                                    }
+                                                });
+                                                pTblTD.appendChild(pTblINPUT);
+                                                // Max button
+                                                pTblMaxBtn = document.createElement("button");
+                                                pTblMaxBtn.setAttribute("nodeid", node.id);
+                                                pTblMaxBtn.textContent = "max";
+                                                pTblMaxBtn.classList.add("smallMaxBtn");
+                                                pTblMaxBtn.onclick = function () { func_.maxThisPassivePoint(this); };
+                                                pTblTD.appendChild(pTblMaxBtn);
+                                                pTblTR.appendChild(pTblTD);
+
+                                                // Max
+                                                pTblTD = document.createElement("td");
+                                                pTblTD.textContent = node.maxPoints;
+                                                pTblTR.appendChild(pTblTD);
+
+                                                // Put the TR into the table
+                                                pTable.appendChild(pTblTR);
                                             }
-                                            pTblTR = document.createElement("tr");
-
-                                            // Passive
-                                            pTblTD = document.createElement("td");
-                                            pTblTD.textContent = M.nodeNameVerbos;
-                                            pTblTR.appendChild(pTblTD);
-
-                                            // Points
-                                            pTblTD = document.createElement("td");
-                                            var pTblINPUT = document.createElement("input");
-                                            pTblINPUT.id = "passiveinput_" + M.nodeID + "";
-                                            pTblINPUT.type = "text";
-                                            pTblINPUT.classList.add("pointInput");
-                                            pTblINPUT.setAttribute("nodename", M.nodeName);
-                                            pTblINPUT.setAttribute("nodeid", M.nodeID);
-                                            pTblINPUT.setAttribute("masteryid", M.masteryID);
-                                            pTblINPUT.setAttribute("maxvalue", M.nodeMax);
-                                            pTblINPUT.value = M.nodePoints;
-                                            pTblTD.appendChild(pTblINPUT);
-                                            // Max button
-                                            pTblMaxBtn = document.createElement("button");
-                                            pTblMaxBtn.setAttribute("nodeid", M.nodeID);
-                                            pTblMaxBtn.textContent = "max";
-                                            pTblMaxBtn.classList.add("smallMaxBtn");
-                                            pTblMaxBtn.onclick = function () { func_.maxThisPassivePoint(this); };
-                                            pTblTD.appendChild(pTblMaxBtn);
-                                            pTblTR.appendChild(pTblTD);
-
-                                            // Max
-                                            pTblTD = document.createElement("td");
-                                            pTblTD.textContent = M.nodeMax;
-                                            pTblTR.appendChild(pTblTD);
-
-                                            // Put the TR into the table
-                                            pTable.appendChild(pTblTR);
                                         });
                                         pdiv.appendChild(pTable);
                                     });
@@ -437,25 +537,29 @@
                     e.parentNode.removeChild(e);
                 }
             },
-            maxAllPoints: function (asd, fileSkillTree) {
-                asd.nodeIDs.forEach(function (asdNode) {
+            maxAllPoints: function (SKILL, fileSkillTree) {
+                Object.keys(SKILL.nodes).forEach(function (N) {
+                    var node = SKILL.nodes[N];
+                    if (node.id == 0) {
+                        return;
+                    }
                     var nodeFound = false;
-                    var INPUT = document.getElementById("input_" + asd.treeID + "_" + asdNode["name"].toLowerCase().replace(rxSpace, "") + "_" + asdNode.id);
+                    var INPUT = document.getElementById("input_" + SKILL.ability + "_" + node.nodeName.toLowerCase().replace(rxSpace, "") + "_" + node.id);
                     fileSkillTree.nodeIDs.forEach(function (fstNode, fstIndex) {
-                        if (parseInt(fstNode, 10) == parseInt(asdNode.id, 10)) {
+                        if (parseInt(fstNode, 10) == parseInt(node.id, 10)) {
                             nodeFound = true;
                             if (INPUT) {
-                                fileSkillTree.nodePoints[fstIndex] = parseInt(asdNode.max, 10);
-                                INPUT.value = parseInt(asdNode.max, 10);
+                                fileSkillTree.nodePoints[fstIndex] = parseInt(node.maxPoints, 10);
+                                INPUT.value = parseInt(node.maxPoints, 10);
                                 INPUT.dispatchEvent(new Event('change', { 'bubbles': true }));
                                 return;
                             }
                         }
                     });
                     if (!nodeFound && INPUT) {
-                        fileSkillTree.nodeIDs.push(parseInt(asdNode.id, 10));
-                        fileSkillTree.nodePoints.push(parseInt(asdNode.max, 10));
-                        INPUT.value = parseInt(asdNode.max, 10);
+                        fileSkillTree.nodeIDs.push(parseInt(node.id, 10));
+                        fileSkillTree.nodePoints.push(parseInt(node.maxPoints, 10));
+                        INPUT.value = parseInt(node.maxPoints, 10);
                         INPUT.dispatchEvent(new Event('change', { 'bubbles': true }));
                     }
                 });
@@ -469,20 +573,22 @@
                     }
                 }
             },
-            toggleSkillEdit: function (skill_DIV, asd, fileSkillTree) {
-                var skillNodesDIV = document.getElementById("skillnodesdiv_" + asd.treeID);
+            toggleSkillEdit: function (skill_DIV, SKILL, fileSkillTree) {
+                var skillNodesDIV = document.getElementById("skillnodesdiv_" + SKILL.ability);
+                var passives_div_TD = document.getElementById("passives_div_TD");
+                var character_skillList_div = document.getElementById("character_skillList_div");
                 if (!skillNodesDIV) {
                     skillNodesDIV = document.createElement("div");
-                    skillNodesDIV.setAttribute("treeid", asd.treeID);
-                    skillNodesDIV.id = "skillnodesdiv_" + asd.treeID;
+                    skillNodesDIV.setAttribute("treeid", SKILL.ability);
+                    skillNodesDIV.id = "skillnodesdiv_" + SKILL.ability;
                     skillNodesDIV.classList.add("skillnodesdiv");
 
                     var allMaxDIV = document.createElement("div");
                     var allMaxBtn = document.createElement("button");
                     allMaxBtn.classList.add("maxAllPointsBTN");
                     allMaxBtn.innerText = "Max all points";
-                    allMaxBtn.setAttribute("treeid", asd.treeID);
-                    allMaxBtn.onclick = function () { func_.maxAllPoints(asd, fileSkillTree); };
+                    allMaxBtn.setAttribute("treeid", SKILL.ability);
+                    allMaxBtn.onclick = function () { func_.maxAllPoints(SKILL, fileSkillTree); };
                     allMaxDIV.appendChild(allMaxBtn);
 
                     var tbl = document.createElement("table");
@@ -502,33 +608,38 @@
 
                     fileSkillTree.unspentPoints = generalSkillData.unspentPoints;
                     fileSkillTree.xp = generalSkillData.maxSkillXP;
-                    asd.nodeIDs.forEach(function (asdNode) {
-                        fstNode_found = false;
+                    Object.keys(SKILL.nodes).forEach(function (N) {
+                        var node = SKILL.nodes[N];
+                        if (node.id == 0) {
+                            return;
+                        }
+                        //console.dir(SKILL);
+                        //fstNode_found = false;
                         var TR = document.createElement("tr");
                         var INPUT = document.createElement("input");
-                        INPUT.id = "input_" + asd.treeID + "_" + asdNode["name"].toLowerCase().replace(rxSpace, "") + "_" + asdNode.id;
+                        INPUT.id = "input_" + SKILL.ability + "_" + node.nodeName.toLowerCase().replace(rxSpace, "") + "_" + node.id;
                         INPUT.type = "text";
-                        INPUT.setAttribute("treeid", asd.treeID);
-                        INPUT.setAttribute("nodeid", asdNode.id);
+                        INPUT.setAttribute("treeid", SKILL.ability);
+                        INPUT.setAttribute("nodeid", node.id);
                         INPUT.value = 0;
 
                         fileSkillTree.nodeIDs.forEach(function (fstNode, fstIndex) {
-                            if (parseInt(asdNode.id, 10) == parseInt(fstNode, 10)) {
+                            if (parseInt(node.id, 10) == parseInt(fstNode, 10)) {
                                 INPUT.value = fileSkillTree.nodePoints[fstIndex];
                                 INPUT.dispatchEvent(new Event('change', { 'bubbles': true }));
                                 return;
                             }
                         });
 
-                        INPUT.onchange = function () { func_.checkMax(this, asdNode.max); }
+                        INPUT.onchange = function () { func_.checkMax(this, node.maxPoints); }
                         INPUT.classList.add("pointInput");
-                        if (parseInt(INPUT.value, 10) < parseInt(asdNode.max, 10)) {
+                        if (parseInt(INPUT.value, 10) < parseInt(node.maxPoints, 10)) {
                             INPUT.classList.add("nonMaxedPoints");
                         }
 
                         // Column: Skill Name
                         var TD = document.createElement("td");
-                        TD.innerText = asdNode["name"];
+                        TD.innerText = node.nodeName;
                         TR.appendChild(TD);
 
                         // Column: Skill Points
@@ -540,7 +651,7 @@
                         // Column: Max Skill Points
                         TD = document.createElement("td");
                         TD.style.textAlign = "center";
-                        TD.innerText = asdNode.max;
+                        TD.innerText = node.maxPoints;
                         TR.appendChild(TD);
 
                         // Append the TR to the table
@@ -549,12 +660,28 @@
 
                     skillNodesDIV.appendChild(allMaxDIV);
                     skillNodesDIV.appendChild(tbl);
-                    skill_DIV.appendChild(skillNodesDIV);
+                    //skill_DIV.appendChild(skillNodesDIV);
+                    character_skillList_div.appendChild(skillNodesDIV);
+                    skillNodesDIV.style.display = "none"; // so it triggers to display below
+                }
+
+                if (skillNodesDIV.style.display == "none") {
+                    skillNodesDIV.style.display = "";
+                    //passives_div_TD.style.display = "none";
+                    func_.hidePassivesDiv();
                 } else {
-                    if (skillNodesDIV.style.display == "none") {
-                        skillNodesDIV.style.display = "";
-                    } else {
-                        skillNodesDIV.style.display = "none";
+                    skillNodesDIV.style.display = "none";
+                    //passives_div_TD.style.display = "";
+                    func_.showPassivesDiv();
+                }
+
+                // Hide all other skillnodesdiv_ divs
+                var divs = document.getElementsByTagName('div');
+                for (var i = 0; i < divs.length; i++) {
+                    if (divs[i].id.indexOf("skillnodesdiv_") == 0) {
+                        if (divs[i].id != "skillnodesdiv_" + SKILL.ability) {
+                            divs[i].style.display = "none";
+                        }
                     }
                 }
             },
@@ -680,6 +807,24 @@
             }
         };
     </script>
+    <script>
+        /* SKILLS */  //console.warn("LEAbilities:"); console.dir(window.LEAbilities); //console.info(JSON.stringify(window.LEAbilities));
+        /* PASSIVES */ // console.warn("LECharTrees:"); console.dir(window.LECharTrees); console.info(JSON.stringify(window.LECharTrees));
+        // console.warn("LECharTreesUI:"); console.dir(window.LECharTreesUI);
+        /* SKILLS */ //console.warn("LESkillTrees:"); console.dir(window.LESkillTrees); //console.info(JSON.stringify(window.LESkillTrees));
+        // console.warn("LESkillTreesUI:"); console.dir(window.LESkillTreesUI);
+        // console.warn("LEHUD:"); console.dir(window.LEHUD);
+        // console.warn("LETooltipIcons:"); console.dir(window.LETooltipIcons);
+        // console.warn("passiveBonuses:"); console.dir(window.passiveBonuses);
+        // console.warn("skillBonuses:"); console.dir(window.skillBonuses);
+        // console.warn("LocalSP:"); console.dir(window.LocalSP);
+        // console.warn("partialSkillBonuses:"); console.dir(window.partialSkillBonuses);
+        // console.warn("UIBuffs:"); console.dir(window.UIBuffs);
+        // console.warn("UIBuffIds:"); console.dir(window.UIBuffIds);
+        // console.warn("BuffId:"); console.dir(window.BuffId);
+        // console.warn("BuffPropId:"); console.dir(window.BuffPropId);
+        // console.warn("CustomConditionType:"); console.dir(window.CustomConditionType);
+    </script>
 </head>
 
 <body>
@@ -714,12 +859,12 @@
             </td>
         </tr>
         <tr id="work_tr">
-            <td style="display: block;">
+            <td id="skills_div_TD" style="display: block;">
                 <div id="selected_skill_div"></div>
                 <div id="character_skillList_div" style="width: max-content;"></div>
             </td>
             <td class="seperatorTD"></td>
-            <td>
+            <td id="passives_div_TD">
                 <div id="passives_div" class="passivesDiv"></div>
             </td>
         </tr>
