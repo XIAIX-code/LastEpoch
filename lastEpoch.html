@@ -22,6 +22,7 @@
     <link href="lastEpoch.css" rel="stylesheet" media="all" onload="this.media='all'; this.onload=null;">
     <link href="styles.css" rel="stylesheet" media="all" onload="this.media='all'; this.onload=null;">
     <link href="icons.css" rel="stylesheet" media="all" onload="this.media='all'; this.onload=null;">
+    <script src="assets/Build Planner JS/tools.js"></script>
 
     <!-- Due to the lack of an API, we have to resort to this -->
     <script src="https://www.lastepochtools.com/data/beta092f/planner/js/120c5f4b6c50656cad06762a28c3d1e2.js"></script>
@@ -240,8 +241,7 @@
                             location.reload();
                             return;
                         }
-                        //console.warn("character (from file): ");
-                        //console.dir(character);
+                        
                         func_.show_work_tr();
                         func_.showGenerateCodeBtn();
                         func_.showMainSkillsDiv();
@@ -259,7 +259,7 @@
                                     skill_DIV.id = "skill_" + SKILL.ability;
                                     skill_DIV.classList.add("skillButton");
                                     skill_DIV.onclick = function () { func_.toggleSkillEdit(skill_DIV, SKILL, fileSkillTree, window.LEAbilities.abilityList[SKILL.ability]); }
-                                    // Skill info stuff
+                                    // Skill ICON
                                     if (window.LEAbilities.abilityList[SKILL.ability].abilitySprite) {
                                         var skill_span_ICON = document.createElement("span");
                                         skill_span_ICON.classList.add("skillIcon");
@@ -332,153 +332,7 @@
                                                 // Passive
                                                 pTblTD = document.createElement("td");
                                                 pTblTD.textContent = node.nodeName;
-
-                                                // Oh the joy of getting the Passive tooltips... oi-vey....
-                                                // --------------   BEGIN   --------------
-                                                var dnswpa = false;
-                                                var outerHTML = '<div class="tree-node-card">';
-                                                outerHTML += '<div class="tree-node-description-block">';
-                                                outerHTML += '<div class="tree-node-name" tree_id="';
-                                                outerHTML += passive.characterTree.treeID;
-                                                outerHTML += '" tree_node_id="';
-                                                outerHTML += node.id;
-                                                outerHTML += '">';
-                                                outerHTML += node.nodeName;
-                                                outerHTML += '</div>';
-                                                if (node.description) {
-                                                    outerHTML += '<div class="tree-node-description">';
-                                                    outerHTML += func_.tripple_N_lineBreaks(node.description);
-                                                    if (node.altText) {
-                                                        outerHTML += '<div class="alt-divider"></div>';
-                                                    }
-                                                }
-                                                if (node.altText) {
-                                                    outerHTML += '<div class="alt-text">';
-                                                    outerHTML += func_.tripple_N_lineBreaks(node.altText);
-                                                    outerHTML += '</div>';
-                                                }
-                                                if (node.description) {
-                                                    outerHTML += '</div>';
-                                                }
-                                                var statFound = 0;
-                                                if (node.stats.length) {
-                                                    node.stats.forEach(function (stat) {
-                                                        if (stat.noScaling) {
-                                                            return;
-                                                        }
-                                                        if (++statFound == 1) {
-                                                            outerHTML += '<div class="stats-container">';
-                                                        }
-                                                        outerHTML += '<div class="tree-node-stat">';
-                                                        outerHTML += '<div class="tree-node-stat-icon">';
-                                                        outerHTML += '<div class="icons icons-r-';
-                                                        outerHTML += stat.sprite.split("-")[2];
-                                                        outerHTML += '"></div>'; // icons icons-r-
-                                                        outerHTML += '</div>'; // tree-node-stat-icon
-                                                        outerHTML += '<div class="tree-node-stat-text">';
-                                                        outerHTML += stat.statName;
-                                                        if (stat["value"]) {
-                                                            outerHTML += ': <span class="stat-emphasis">';
-                                                            outerHTML += stat["value"];
-                                                            outerHTML += ' per point</span>';
-                                                        }
-                                                        outerHTML += '</div>'; // tree-node-stat-text
-                                                        outerHTML += '</div>'; // tree-node-stat
-                                                    });
-                                                    if (statFound) {
-                                                        outerHTML += '</div>'; // stats-container
-                                                    }
-                                                }
-
-                                                // Any bonus info?
-                                                var pointsBonusContainer = false;
-                                                if (node.noScalingPointThreshold) {
-                                                    pointsBonusContainer = true;
-                                                    outerHTML += '<div class="point-bonus-container">';
-                                                    outerHTML += '<div class="point-bonus-title">';
-                                                    outerHTML += node.noScalingPointThreshold;
-                                                    outerHTML += ' Point Bonus</div>'; // point-bonus-title
-                                                    if (node.pointBonusDescription) {
-                                                        outerHTML += '<div class="point-bonus-description">';
-                                                        outerHTML += node.pointBonusDescription;
-                                                        outerHTML += '</div>'; // point-bonus-description
-                                                    }
-                                                    if (node.noScalingType && !dnswpa) {
-                                                        outerHTML += '<div class="stats-header">Does not scale with points allocated</div>';
-                                                        dnswpa = true;
-                                                    }
-                                                } else {
-                                                    if (node.pointBonusDescription) {
-                                                        pointsBonusContainer = true;
-                                                        outerHTML += '<div class="point-bonus-container">';
-                                                        outerHTML += '<div class="point-bonus-description">';
-                                                        outerHTML += node.pointBonusDescription;
-                                                        outerHTML += '</div>'; // point-bonus-description
-                                                    }
-                                                    if (node.noScalingType && !dnswpa) {
-                                                        outerHTML += '<div class="stats-header">Does not scale with points allocated</div>';
-                                                        dnswpa = true;
-                                                    }
-                                                }
-                                                //if (pointsBonusContainer) {
-                                                statFound = 0;
-                                                if (node.stats.length) {
-                                                    node.stats.forEach(function (stat) {
-                                                        if (!stat.noScaling) {
-                                                            return;
-                                                        }
-                                                        if (++statFound == 1) {
-                                                            outerHTML += '<div class="stats-container">';
-                                                            if (!dnswpa) {
-                                                                outerHTML += '<div class="stats-header">Does not scale with points allocated</div>';
-                                                                dnswpa = true;
-                                                            }
-                                                        }
-                                                        outerHTML += '<div class="tree-node-stat">';
-                                                        outerHTML += '<div class="tree-node-stat-icon">';
-                                                        outerHTML += '<div class="icons icons-r-';
-                                                        outerHTML += stat.sprite.split("-")[2];
-                                                        outerHTML += '"></div>'; // icons icons-r-
-                                                        outerHTML += '</div>'; // tree-node-stat-icon
-                                                        outerHTML += '<div class="tree-node-stat-text">';
-                                                        outerHTML += stat.statName;
-                                                        if (stat["value"]) {
-                                                            outerHTML += ': <span class="stat-emphasis">';
-                                                            outerHTML += stat["value"];
-                                                            outerHTML += '</span>';
-                                                        }
-                                                        outerHTML += '</div>'; // tree-node-stat-text
-                                                        outerHTML += '</div>'; // tree-node-stat
-                                                    });
-                                                    if (statFound) {
-                                                        outerHTML += '</div>'; // stats-container
-                                                    }
-                                                    //}
-                                                    if (pointsBonusContainer) {
-                                                        outerHTML += '</div>'; // point-bonus-container
-                                                    }
-                                                }
-
-
-                                                outerHTML += '</div>'; // tree-node-description-block
-                                                outerHTML += '</div>'; // tree-node-card
-                                                // --------------   END   --------------
-
-                                                var tippyDIV = document.createElement("div");
-                                                tippyDIV.classList.add("tippydiv");
-                                                tippyDIV.style.display = "none";
-                                                tippyDIV.id = "tippydiv_" + node.id + "";
-                                                tippyDIV.innerHTML = outerHTML;
-                                                pTblTD.addEventListener("mouseenter", function (e) {
-                                                    tippyDIV.style.display = "";
-                                                });
-                                                pTblTD.addEventListener("mouseleave", function (e) {
-                                                    tippyDIV.style.display = "none";
-                                                });
-                                                pTblTD.addEventListener("mousemove", function (e) {
-                                                    tippyDIV.style.marginLeft = 25 + e.offsetX + "px";
-                                                });
-                                                pTblTD.appendChild(tippyDIV);
+                                                pTblTD = generateToolTip(pTblTD, node, passive.characterTree.treeID, 'passive');
                                                 pTblTR.appendChild(pTblTD);
 
                                                 // Points
@@ -642,6 +496,7 @@
                         if (node.id == 0) {
                             return;
                         }
+
                         var TR = document.createElement("tr");
                         var INPUT = document.createElement("input");
                         INPUT.id = "input_" + SKILL.ability + "_" + node.nodeName.toLowerCase().replace(rxSpace, "") + "_" + node.id;
@@ -667,6 +522,15 @@
                         // Column: Skill Name
                         var TD = document.createElement("td");
                         TD.innerText = node.nodeName;
+                        TD = generateToolTip(TD, node, SKILL.ability, 'skill');
+                        // // Skill ICON
+                        // if (window.LEAbilities.abilityList[SKILL.ability].abilitySprite) {
+                        //     var skill_span_ICON = document.createElement("span");
+                        //     skill_span_ICON.classList.add("skillIcon");
+                        //     skill_span_ICON.classList.add("icons");
+                        //     skill_span_ICON.classList.add("icons-r-" + window.LEAbilities.abilityList[SKILL.ability].abilitySprite.split("-")[2]);
+                        //     TD.insertBefore(skill_span_ICON, TD.firstChild);
+                        // }
                         TR.appendChild(TD);
 
                         // Column: Skill Points
