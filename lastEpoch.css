@@ -225,10 +225,17 @@ input {
 	font-size: large;
 	max-width: 700px;
 	overflow-y: auto;
+	width: max-content;
 }
 
 .skillIcon {
 	transform: scale(.75);
+	display: table-cell;
+	vertical-align: middle;
+}
+
+.skillNodeIcon {
+	transform: scale(.6);
 	display: table-cell;
 	vertical-align: middle;
 }
@@ -244,4 +251,21 @@ input {
 	padding: 10px;
 	color: #016101;
 	font-weight: bold;
+}
+
+body {
+	background: #1c1d1f;
+	background-image: url("assets/background.webp");
+	background-repeat: repeat;
+	background-size: contain;
+}
+
+div {
+	background-color: #0d0d0d;
+	color: #a88054;
+}
+
+td {
+	background-color: #1f2123;
+	color: #a88054;
 }

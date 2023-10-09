@@ -490,16 +490,25 @@ var func_ = {
 
 				// Column: Skill Name
 				var TD = document.createElement("td");
-				TD.innerText = node.nodeName;
+				// Skill ICON
+				if (window.LESkillTreesUI[SKILL.ability]) {
+					window.LESkillTreesUI[SKILL.ability].children.forEach(function(child){
+						if (child.nodeId == node.id){
+							var skill_span_ICON = document.createElement("span");
+							skill_span_ICON.classList.add("skillNodeIcon");
+							skill_span_ICON.classList.add("icons");
+							skill_span_ICON.classList.add("icons-r-" + child.icon.split("-")[2]);
+							TD.insertBefore(skill_span_ICON, TD.firstChild);
+						}
+					});
+				}
+				var skill_span_NAME = document.createElement("span");
+				skill_span_NAME.textContent = node.nodeName;
+				skill_span_NAME.classList.add("skillName");
+
+				TD.appendChild(skill_span_NAME);
 				TD = generateToolTip(TD, node, SKILL.ability, 'skill');
-				// // Skill ICON
-				// if (window.LEAbilities.abilityList[SKILL.ability].abilitySprite) {
-				//     var skill_span_ICON = document.createElement("span");
-				//     skill_span_ICON.classList.add("skillIcon");
-				//     skill_span_ICON.classList.add("icons");
-				//     skill_span_ICON.classList.add("icons-r-" + window.LEAbilities.abilityList[SKILL.ability].abilitySprite.split("-")[2]);
-				//     TD.insertBefore(skill_span_ICON, TD.firstChild);
-				// }
+				
 				TR.appendChild(TD);
 
 				// Column: Skill Points
