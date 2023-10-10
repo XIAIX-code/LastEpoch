@@ -11,7 +11,7 @@ var func_ = {
 		func_.clearTextArea();
 		func_.hideGenerateCodeBtn();
 		func_.hideCopyBtn();
-		func_.hide_work_tr();
+		func_.hide_editing_div();
 		func_.setTextAreaOnchangeFunction();
 		func_.setInputButtonOnclickFunction();
 		func_.check_if_copy_command_is_supported();
@@ -157,14 +157,14 @@ var func_ = {
 			e.style.display = "";
 		}
 	},
-	hide_work_tr: function () {
-		var e = document.getElementById("work_tr");
+	hide_editing_div: function () {
+		var e = document.getElementById("editing_div");
 		if (e) {
 			e.style.display = "none";
 		}
 	},
-	show_work_tr: function () {
-		var e = document.getElementById("work_tr");
+	show_editing_div: function () {
+		var e = document.getElementById("editing_div");
 		if (e) {
 			e.style.display = "";
 		}
@@ -214,7 +214,7 @@ var func_ = {
 					return;
 				}
 
-				func_.show_work_tr();
+				func_.show_editing_div();
 				func_.showGenerateCodeBtn();
 				func_.showMainSkillsDiv();
 				func_.showClassSkillDiv();
@@ -264,93 +264,63 @@ var func_ = {
 						if (character.characterClass == passive.characterTree.characterClass.classID) {
 							var passiveReference = passive.ref;
 							passive.characterTree.characterClass.masteries.forEach(function (mastery, mIdx) {
-								var pTable = document.createElement("table");
+								var pTable = document.createElement("div");
 
-								var masteryHeaderTR = document.createElement("tr");
-								var masteryHeaderTD = document.createElement("td");
-								masteryHeaderTD.colSpan = "3";
-								masteryHeaderTD.classList.add("passiveMasteryHeader");
+								var passiveMasteryHeaderDIV = document.createElement("div");
+								passiveMasteryHeaderDIV.id = "passiveMasteryHeaderDIV_" + mIdx;
+								passiveMasteryHeaderDIV.classList.add("passiveMasteryHeader");
 
-								masteryHeaderTR.appendChild(masteryHeaderTD);
-								pTable.appendChild(masteryHeaderTR);
+								pTable.appendChild(passiveMasteryHeaderDIV);
 
-								var pTblTR = document.createElement("tr");
-								var pTblTH = document.createElement("th");
+								var passiveMasteryColumnHeaderDIV = document.createElement("div");
+								passiveMasteryColumnHeaderDIV.id = "passiveMasteryColumnHeaderDIV_" + mIdx;
+								passiveMasteryColumnHeaderDIV.classList.add("passiveMasteryColumnHeaderDIV");
+								var pTblTH = document.createElement("div");
+								pTblTH.id = "pTblTH_" + mIdx;
 								pTblTH.textContent = "Passive";
-								pTblTR.appendChild(pTblTH);
-								pTblTH = document.createElement("th");
+								passiveMasteryColumnHeaderDIV.appendChild(pTblTH);
+								pTblTH = document.createElement("div");
 								pTblTH.textContent = "Points";
-								pTblTR.appendChild(pTblTH);
-								pTable.appendChild(pTblTR);
+								passiveMasteryColumnHeaderDIV.appendChild(pTblTH);
+								pTable.appendChild(passiveMasteryColumnHeaderDIV);
 
 								if (!pTable.id || pTable.id == "") {
 									pTable.id = "passives_table_" + mIdx + "";
 
-									// Why we can't just use masteryHeaderTD.textContent = 
+									// Why we can't just use passiveMasteryHeaderDIV.textContent = 
 									// https://stackoverflow.com/questions/74048912/changes-to-a-parent-elements-textcontent-causes-the-child-to-delete
 									var tmpSpan = document.createElement("span");
 									tmpSpan.textContent = mastery["name"];
-									masteryHeaderTD.appendChild(tmpSpan);
+									passiveMasteryHeaderDIV.appendChild(tmpSpan);
 								}
 								Object.keys(passive.characterTree.nodes).forEach(function (N) {
 									var node = passive.characterTree.nodes[N];
 									if (node.mastery == mIdx) {
-										pTblTR = document.createElement("tr");
 
 										// Passive
-										var pTblTD = document.createElement("td");
-										pTblTD.textContent = node.nodeName;
-										pTblTD = generateToolTip(pTblTD, node, passive.characterTree.treeID, 'passive');
-										pTblTD.addEventListener("wheel", function (e) {
-											var pointsDiv = document.getElementById("passiveinput_" + node.id);
-											if (pointsDiv) {
-												var thisValue = parseInt(pointsDiv.getAttribute("value"), 10);
-												if (e.deltaY < 0) { /* Scrolling up */
-													if (thisValue < node.maxPoints) {
-														pointsDiv.setAttribute("value", thisValue + 1);
-														pointsDiv.textContent = (thisValue + 1) + "/" + node.maxPoints;
-													}
-												}
-												else if (e.deltaY > 0) { /* Scrolling down */
-													if (thisValue > 0) {
-														pointsDiv.setAttribute("value", thisValue - 1);
-														pointsDiv.textContent = (thisValue - 1) + "/" + node.maxPoints;
-													}
-												}
-											}
-										});
-										pTblTD.addEventListener("click", function (e) {
-											var pointsDiv = document.getElementById("passiveinput_" + node.id);
-											if (pointsDiv) {
-												var thisValue = parseInt(pointsDiv.getAttribute("value"), 10);
-												if (thisValue < node.maxPoints) {
-													pointsDiv.setAttribute("value", thisValue + 1);
-													pointsDiv.textContent = (thisValue + 1) + "/" + node.maxPoints;
-												}
-											}
-										});
-										pTblTD.addEventListener("contextmenu", function (e) {
-											var pointsDiv = document.getElementById("passiveinput_" + node.id);
-											if (pointsDiv) {
-												var thisValue = parseInt(pointsDiv.getAttribute("value"), 10);
-												if (thisValue > 0) {
-													pointsDiv.setAttribute("value", thisValue - 1);
-													pointsDiv.textContent = (thisValue - 1) + "/" + node.maxPoints;
-												}
-											}
-											e.preventDefault();
-										});
-										pTblTR.appendChild(pTblTD);
+										var passivesRow = document.createElement("div");
+										passivesRow.id = "passivesRow_" + node.id;
+										passivesRow.classList.add("passivesRow");
+
+										var passiveName = document.createElement("div");
+										passiveName.id = "passiveName_" + node.id;
+										passiveName.classList.add("passiveNameDiv");
+										passiveName.textContent = node.nodeName;
+
+										passivesRow.appendChild(passiveName);
 
 										// Points
 										var pTblINPUT__tree_node_card_DIV = document.createElement("div");
+										pTblINPUT__tree_node_card_DIV.id = "pTblINPUT__tree_node_card_DIV_" + node.id;
 										pTblINPUT__tree_node_card_DIV.classList.add("tree-node-card");
 										pTblINPUT__tree_node_card_DIV.style.width = "max-content";
 										pTblINPUT__tree_node_card_DIV.style.margin = "auto";
 										var pTblINPUT__node_points_DIV = document.createElement("div");
+										pTblINPUT__node_points_DIV.id = "pTblINPUT__node_points_DIV_" + node.id;
 										pTblINPUT__node_points_DIV.classList.add("node-points");
 
-										pTblTD = document.createElement("td");
+										var passivePoints = document.createElement("div");
+										passivePoints.id = "passivePoints_" + node.id;
 										var pTblINPUT = document.createElement("div");
 										pTblINPUT.id = "passiveinput_" + node.id + "";
 										pTblINPUT.classList.add("pointInput");
@@ -393,12 +363,10 @@ var func_ = {
 
 										pTblINPUT__node_points_DIV.appendChild(pTblINPUT);
 										pTblINPUT__tree_node_card_DIV.appendChild(pTblINPUT__node_points_DIV);
-
-										pTblTD.appendChild(pTblINPUT__tree_node_card_DIV);
-										pTblTR.appendChild(pTblTD);
-
-										// Put the TR into the table
-										pTable.appendChild(pTblTR);
+										passivePoints.appendChild(pTblINPUT__tree_node_card_DIV);
+										passivesRow.appendChild(passivePoints);
+										generateToolTip(passivePoints, node, passive.characterTree.treeID, 'passive');
+										pTable.appendChild(passivesRow);
 									}
 								});
 								pdiv.appendChild(pTable);
@@ -439,7 +407,7 @@ var func_ = {
 		}
 	},
 	deleteWorkTR: function () {
-		var e = document.getElementById("work_tr");
+		var e = document.getElementById("editing_div");
 		if (e) {
 			e.parentNode.removeChild(e);
 		}
@@ -488,7 +456,7 @@ var func_ = {
 	},
 	toggleSkillEdit: function (skill_DIV, SKILL, fileSkillTree, SKILL_ABILITY) {
 		var skillNodesDIV = document.getElementById("skillnodesdiv_" + SKILL.ability);
-		var passives_div_TD = document.getElementById("passives_div_TD");
+		//var passives_div_TD = document.getElementById("passives_div_TD");
 		var character_skillList_div = document.getElementById("character_skillList_div");
 		if (!skillNodesDIV) {
 			skillNodesDIV = document.createElement("div");

@@ -24,7 +24,6 @@
 }
 
 .skillnodesdiv {
-	border: 1px solid red;
 	padding: 5px;
 	position: fixed;
 	left: 500px;
@@ -190,6 +189,17 @@ input {
 	position: absolute;
 	overflow-y: auto;
 	height: 100%;
+	margin-left: 300px;
+}
+
+.passivesRow {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+	grid-column-gap: 5px;
+	align-items: center;
+	height: 35px;
+	border: 1px solid #a880542e;
+	border-radius: 15px;
 }
 
 .seperatorTD {
@@ -304,4 +314,20 @@ th {
 .bigBtn:active {
 	position: relative;
 	top: 1px;
+}
+
+.passiveNameDiv {
+	padding-left: 10px;
+}
+
+.passiveMasteryColumnHeaderDIV {
+	display: grid;
+	grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+	grid-column-gap: 5px;
+	align-items: center;
+	height: 35px;
+	border: 1px solid #a880542e;
+	border-radius: 15px;
+	text-align: center;
+	background-color: #343332;
 }

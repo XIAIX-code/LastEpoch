@@ -13,20 +13,19 @@
     Alt+Up Arrow Key    Move Line Up
 
     Ctrl+A Ctrl+K Ctrl+F   Format everything beautifully
-
 -->
 
 <head>
     <meta charset="utf-8">
     <title>Last Epoch Beta 0.9.2f</title>
-    <link rel="stylesheet preload prefetch" href="common/fonts/linbiolinum_sansserif.ttf" as='style'>
-	<link rel="stylesheet preload prefetch" href="common/fonts/CinzelRegular.ttf" as='style'>
-	<link rel="stylesheet preload prefetch" href="common/fonts/ForumRegular.ttf" as='style'>
+    <link rel="stylesheet preload prefetch" href="common/fonts/linbiolinum_sansserif.ttf" as='style' type="font/ttf">
+    <link rel="stylesheet preload prefetch" href="common/fonts/CinzelRegular.ttf" as='style' type="font/ttf">
+    <link rel="stylesheet preload prefetch" href="common/fonts/ForumRegular.ttf" as='style' type="font/ttf">
     <link href="lastEpoch.css" rel="stylesheet" media="all" onload="this.media='all'; this.onload=null;">
     <link href="styles.css" rel="stylesheet" media="all" onload="this.media='all'; this.onload=null;">
     <link href="icons.css" rel="stylesheet" media="all" onload="this.media='all'; this.onload=null;">
     <script src="main.js"></script>
-    <script src="assets/Build Planner JS/tools.js"></script>
+    <script src="tools.js"></script>
 
     <!-- Due to the lack of an API, we have to resort to this -->
     <script src="https://www.lastepochtools.com/data/beta092f/planner/js/120c5f4b6c50656cad06762a28c3d1e2.js"></script>
@@ -53,48 +52,45 @@
 </head>
 
 <body>
-    <table>
-        <tr id="menu_tr">
-            <td colspan="3">
-                <div id="inputfile_div">
-                    <div>Navigate to your Last Epoch character save folder and choose the character file you want to
-                        edit:</div>
-                    <div class="fileLocationDiv">(typically located:
-                        <pre
-                            style="display: inline;">C:\Users\&lt;USERNAME&gt;\AppData\LocalLow\Eleventh Hour Games\Last Epoch\Saves</pre>
-                    </div>
-                    <input type="file" name="inputfile" id="inputfile" />
+    <!-- <table> -->
+    <div id="menu_div">
+        <div>
+            <div id="inputfile_div">
+                <div>Navigate to your Last Epoch character save folder and choose the character file you want to
+                    edit:</div>
+                <div class="fileLocationDiv">(typically located:
+                    <pre
+                        style="display: inline;">C:\Users\&lt;USERNAME&gt;\AppData\LocalLow\Eleventh Hour Games\Last Epoch\Saves</pre>
                 </div>
-                <div id="generateCodeFileData_div">
-                    <div class="textAreaInstructions">
-                        Click "Copy to Clipboard" button then paste into your character save file, then save that file
-                        that file.
-                    </div>
-                    <textarea readonly="readonly" id="generateCodeFileData" class="charTextArea"></textarea>
+                <input type="file" name="inputfile" id="inputfile" />
+            </div>
+            <div id="generateCodeFileData_div">
+                <div class="textAreaInstructions">
+                    Click "Copy to Clipboard" button then paste into your character save file, then save that file
+                    that file.
                 </div>
-                <div id="copyButton_div">
-                    <button onclick="location.reload();">Reload</button>
-                    <button class="highlight-copy-btn" onclick="func_.selectAndCopyTextArea(this)">Copy to
-                        Clipboard</button>
-                </div>
-                <div id="generateCodeButton_div">
-                    <button class="bigBtn" onclick="func_.generateCodeAndDisplay()">Generate Code</button>
-                </div>
-                <hr />
-            </td>
-        </tr>
-        <tr id="work_tr">
-            <td id="skills_div_TD" style="background-color: transparent;">
-                <div class="skillsTitleDiv">SKILLS</div>
-                <hr>
-                <div id="selected_skill_div"></div>
-                <div id="character_skillList_div" style="width: max-content;"></div>
-            </td>
-            <td id="passives_div_TD">
-                <div id="passives_div" class="passivesDiv"></div>
-            </td>
-        </tr>
-    </table>
+                <textarea readonly="readonly" id="generateCodeFileData" class="charTextArea"></textarea>
+            </div>
+            <div id="copyButton_div">
+                <button onclick="location.reload();">Reload</button>
+                <button class="highlight-copy-btn" onclick="func_.selectAndCopyTextArea(this)">Copy to
+                    Clipboard</button>
+            </div>
+            <div id="generateCodeButton_div">
+                <button class="bigBtn" onclick="func_.generateCodeAndDisplay()">Generate Code</button>
+            </div>
+            <hr style="width: 350px;float: left;" />
+        </div>
+    </div>
+    <div id="editing_div">
+        <div id="skills_div" style="width: max-content;">
+            <div id="selected_skill_div"></div>
+            <div id="character_skillList_div"></div>
+        </div>
+        <div id="passives_div" class="passivesDiv"></div>
+    </div>
+    </div>
+    <!-- </table> -->
     <script>
         window.onload = func_.init();
     </script>
