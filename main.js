@@ -9,14 +9,13 @@ var func_ = {
 	init: function () {
 		func_.resetFileInput();
 		func_.clearTextArea();
-		func_.hideGenerateCodeBtn();
-		func_.hideCopyBtn();
-		func_.hide_editing_div();
+		func_.hide_by_id("generateCodeButton_div");
+		func_.hide_by_id("copyButton_div");
+		func_.hide_by_id("editing_div");
 		func_.setTextAreaOnchangeFunction();
 		func_.setInputButtonOnclickFunction();
 		func_.check_if_copy_command_is_supported();
-		// Create an addEventListener for when a character file is loaded
-		func_.readFile();
+		func_.readFile(); // Create an addEventListener for when a character file is loaded
 	},
 	tripple_N_lineBreaks: function (str) {
 		var regex = /\n\n\n/g;
@@ -24,48 +23,11 @@ var func_ = {
 		var result = str.replace(regex, subst);
 		return result;
 	},
-	hideCopyBtn: function () {
-		var e = document.getElementById("copyButton_div");
-		if (e) {
-			e.style.display = "none";
-		}
-	},
-	showCopyBtn: function () {
-		var e = document.getElementById("copyButton_div");
-		if (e) {
-			e.style.display = "";
-		}
-		func_.hideInputFileDIV();
-	},
-	hideGenerateCodeBtn: function () {
-		var e = document.getElementById("generateCodeButton_div");
-		if (e) {
-			e.style.display = "none";
-		}
-	},
-	showGenerateCodeBtn: function () {
-		var e = document.getElementById("generateCodeButton_div");
-		if (e) {
-			e.style.display = "";
-		}
-	},
-	hideMainSkillsDiv: function () {
-		var e = document.getElementById("character_skillList_div");
-		if (e) {
-			e.style.display = "none";
-		}
-	},
-	showMainSkillsDiv: function () {
-		var e = document.getElementById("character_skillList_div");
-		if (e) {
-			e.style.display = "";
-		}
-	},
 	startOver: function () {
-		func_.hideGenerateCodeBtn();
+		func_.hide_by_id("generateCodeButton_div");
 		func_.clearTextArea();
 		func_.resetFileInput();
-		func_.hideMainSkillsDiv();
+		func_.hide_by_id("character_skillList_div");
 	},
 	check_if_copy_command_is_supported: function () {
 		var e = document.getElementById("generateCodeFileData");
@@ -105,9 +67,9 @@ var func_ = {
 		if (e) {
 			e.value = "";
 			e.style.display = "none";
-			func_.hideTextAreaDIV();
+			func_.hide_by_id("generateCodeFileData_div");
 			func_.deleteAllSkillNodeDivs();
-			func_.hideCopyBtn();
+			func_.hide_by_id("copyButton_div");
 		}
 	},
 	setTextArea: function (data) {
@@ -115,8 +77,8 @@ var func_ = {
 		if (e) {
 			e.value = data;
 			e.style.display = "";
-			func_.showTextAreaDIV();
-			func_.showCopyBtn();
+			func_.show_by_id("generateCodeFileData_div");
+			func_.show_by_id("copyButton_div");
 		}
 	},
 	deleteAllSkillNodeDivs: function () {
@@ -133,56 +95,16 @@ var func_ = {
 			e.value = "";
 		}
 	},
-	hideTextAreaDIV: function () {
-		var e = document.getElementById("generateCodeFileData_div");
+	hide_by_id: function (element) {
+		var e = document.getElementById(element);
 		if (e) {
 			e.style.display = "none";
 		}
 	},
-	showTextAreaDIV: function () {
-		var e = document.getElementById("generateCodeFileData_div");
+	show_by_id: function (element) {
+		var e = document.getElementById(element);
 		if (e) {
 			e.style.display = "";
-		}
-	},
-	hideInputFileDIV: function () {
-		var e = document.getElementById("inputfile_div");
-		if (e) {
-			e.style.display = "none";
-		}
-	},
-	showInputFileDIV: function () {
-		var e = document.getElementById("inputfile_div");
-		if (e) {
-			e.style.display = "";
-		}
-	},
-	hide_editing_div: function () {
-		var e = document.getElementById("editing_div");
-		if (e) {
-			e.style.display = "none";
-		}
-	},
-	show_editing_div: function () {
-		var e = document.getElementById("editing_div");
-		if (e) {
-			e.style.display = "";
-		}
-	},
-	removeIrrelevantClassDivs: function (charClass) {
-		var e = document.getElementsByName("main_class_skill_div");
-		var divArray = [];
-		for (var i = 0; i < e.length; i++) {
-			divArray.push(e[i]);
-		}
-		var safety = 500;
-		while (divArray.length && --safety > 0) {
-			if (divArray[0].id.toString().indexOf(charClass) < 0) {
-				document.getElementById(divArray[0].id).parentNode.removeChild(document.getElementById(divArray[0].id));
-				divArray.splice(0, 1);
-			} else {
-				divArray.splice(0, 1);
-			}
 		}
 	},
 	populatePassivesTable: function () {
@@ -214,12 +136,10 @@ var func_ = {
 					return;
 				}
 
-				func_.show_editing_div();
-				func_.showGenerateCodeBtn();
-				func_.showMainSkillsDiv();
-				func_.showClassSkillDiv();
-				func_.hideInputFileDIV();
-				var charClass = false;
+				func_.show_by_id("editing_div");
+				func_.show_by_id("generateCodeButton_div");
+				func_.show_by_id("character_skillList_div");
+				func_.hide_by_id("inputfile_div");
 
 				// Character skills
 				var character_skillList_div = document.getElementById("character_skillList_div");
@@ -248,9 +168,6 @@ var func_ = {
 						}
 					}
 				});
-				if (charClass) {
-					func_.removeIrrelevantClassDivs(charClass);
-				}
 
 				// Character passives
 				var pdiv = document.getElementById("passives_div");
@@ -379,39 +296,6 @@ var func_ = {
 			fr.readAsText(this.files[0]);
 		})
 	},
-	checkMax: function (e, max) {
-		if (isNaN(parseInt(e.value))) {
-			e.value = 0;
-			alert("not a number, setting value to 0");
-		}
-		if (parseInt(e.value, 10) > parseInt(max, 10)) {
-			e.value = parseInt(max, 10);
-			alert("setting to max");
-		}
-		// if (parseInt(e.value, 10) < parseInt(max, 10)) {
-		// 	e.classList.add("nonMaxedPoints");
-		// } else {
-		// 	e.classList.remove("nonMaxedPoints");
-		// }
-	},
-	toggleCollapse: function (e) {
-		var p = e.parentNode;
-		for (var i = 0; i < p.children.length; i++) {
-			if (p.children[i].tagName == "DIV") {
-				if (p.children[i].style.display == "none") {
-					p.children[i].style.display = "";
-				} else {
-					p.children[i].style.display = "none";
-				}
-			}
-		}
-	},
-	deleteWorkTR: function () {
-		var e = document.getElementById("editing_div");
-		if (e) {
-			e.parentNode.removeChild(e);
-		}
-	},
 	maxAllPoints: function (SKILL, fileSkillTree) {
 		Object.keys(SKILL.nodes).forEach(function (N) {
 			var node = SKILL.nodes[N];
@@ -456,7 +340,6 @@ var func_ = {
 	},
 	toggleSkillEdit: function (skill_DIV, SKILL, fileSkillTree, SKILL_ABILITY) {
 		var skillNodesDIV = document.getElementById("skillnodesdiv_" + SKILL.ability);
-		//var passives_div_TD = document.getElementById("passives_div_TD");
 		var character_skillList_div = document.getElementById("character_skillList_div");
 		if (!skillNodesDIV) {
 			skillNodesDIV = document.createElement("div");
@@ -603,12 +486,12 @@ var func_ = {
 
 		if (skillNodesDIV.style.display == "none") {
 			skillNodesDIV.style.display = "";
-			func_.hidePassivesDiv();
+			func_.hide_by_id("passives_div");
 			skill_DIV.classList.remove("skillButton");
 			skill_DIV.classList.add("activeSkillButton");
 		} else {
 			skillNodesDIV.style.display = "none";
-			func_.showPassivesDiv();
+			func_.show_by_id("passives_div");
 			skill_DIV.classList.remove("activeSkillButton");
 			skill_DIV.classList.add("skillButton");
 		}
@@ -627,30 +510,6 @@ var func_ = {
 					divs[i].classList.add("skillButton");
 				}
 			}
-		}
-	},
-	hideClassSkillDiv: function () {
-		var e = document.getElementsByName("main_class_skill_div")[0];
-		if (e) {
-			e.style.display = "none";
-		}
-	},
-	showClassSkillDiv: function () {
-		var e = document.getElementsByName("main_class_skill_div")[0];
-		if (e) {
-			e.style.display = "";
-		}
-	},
-	hidePassivesDiv: function () {
-		var e = document.getElementById("passives_div");
-		if (e) {
-			e.style.display = "none";
-		}
-	},
-	showPassivesDiv: function () {
-		var e = document.getElementById("passives_div");
-		if (e) {
-			e.style.display = "grid";
 		}
 	},
 	dataIsValid: function (data) {
@@ -677,11 +536,8 @@ var func_ = {
 										fileSkillTree.nodePoints[fstIndex] = VALUE;
 									} else {
 										// All points were removed, so let's remove the nodeID and the 0 value
-
-										// Remove the skill
-										fileSkillTree.nodeIDs.splice(fstIndex, 1);
-										// Remove the point
-										fileSkillTree.nodePoints.splice(fstIndex, 1);
+										fileSkillTree.nodeIDs.splice(fstIndex, 1); // Remove the skill
+										fileSkillTree.nodePoints.splice(fstIndex, 1); // Remove the point
 									}
 									nodeFound = true;
 								}
@@ -721,9 +577,12 @@ var func_ = {
 		// Now validate and display it
 		if (func_.dataIsValid(character)) { // One last check for sanity reason :/
 			func_.setTextArea("EPOCH" + JSON.stringify(character));
-			func_.showCopyBtn();
-			func_.hideGenerateCodeBtn();
-			func_.deleteWorkTR();
+			func_.show_by_id("copyButton_div");
+			func_.hide_by_id("generateCodeButton_div");
+			var e = document.getElementById("editing_div");
+			if (e) {
+				e.parentNode.removeChild(e);
+			}
 		} else {
 			alert("The data is either corrupt or you picked a non-character save file.");
 			location.reload();
@@ -743,11 +602,11 @@ var func_ = {
 	},
 	textAreaChanged: function (e) {
 		if (e.value == "") {
-			func_.hideGenerateCodeBtn();
-			func_.hideCopyBtn();
+			func_.hide_by_id("generateCodeButton_div");
+			func_.hide_by_id("copyButton_div");
 			func_.clearTextArea();
 			func_.resetFileInput();
-			func_.hideMainSkillsDiv();
+			func_.hide_by_id("character_skillList_div");
 		}
 	}
 };
