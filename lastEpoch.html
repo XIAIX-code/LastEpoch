@@ -24,12 +24,12 @@
     <link href="css/lastEpoch.css" rel="stylesheet" media="all" onload="this.media='all'; this.onload=null;">
     <link href="css/styles.css" rel="stylesheet" media="all" onload="this.media='all'; this.onload=null;">
     <link href="css/icons.css" rel="stylesheet" media="all" onload="this.media='all'; this.onload=null;">
-    <script src="main.js"></script>
-    <script src="tools.js"></script>
+    <script src="js/main.js"></script>
+    <script src="js/tools.js"></script>
 
     <!-- Due to the lack of an API, we have to resort to this -->
     <script src="https://www.lastepochtools.com/data/beta092f/planner/js/120c5f4b6c50656cad06762a28c3d1e2.js"></script>
-    <!-- If the above link ever goes poof, we have it in "assets/Build Planner JS" -->
+    <!-- If the above link ever goes poof, we have it in the 'js' folder -->
 
     <script>
         /* SKILLS */  //console.warn("LEAbilities:"); console.dir(window.LEAbilities); //console.info(JSON.stringify(window.LEAbilities));
@@ -52,50 +52,50 @@
 </head>
 
 <body>
-    <!-- <table> -->
-    <div id="menu_div">
-        <div>
-            <div id="inputfile_div">
-                <div style="font-size: 18pt;">
-                    Navigate to your Last Epoch character save folder and choose the character file <span
-                        style="color: blueviolet;font-style: italic;font-size: smaller;">1CHARACTERSLOT_BETA_#</span>
-                    you want to
-                    edit:
+    <div id="LEMasterDiv">
+        <div id="menu_div">
+            <div>
+                <div id="inputfile_div">
+                    <div style="font-size: 18pt;">
+                        Navigate to your Last Epoch character save folder and choose the character file <span
+                            style="color: blueviolet;font-style: italic;font-size: smaller;">1CHARACTERSLOT_BETA_#</span>
+                        you want to
+                        edit:
+                    </div>
+                    <div class="fileLocationDiv">
+                        (typically located: <span
+                            style="color: whitesmoke;font-family: 'Courier New', monospace;">C:\Users\<span
+                                style="color: #bc8585;font-family: 'Times New Roman', serif;">&lt;USERNAME&gt;</span>\AppData\LocalLow\Eleventh
+                            Hour Games\Last Epoch\Saves</span>)
+                    </div>
+                    <input type="file" name="inputfile" id="inputfile" />
                 </div>
-                <div class="fileLocationDiv">
-                    (typically located: <span
-                        style="color: whitesmoke;font-family: 'Courier New', monospace;">C:\Users\<span
-                            style="color: #bc8585;font-family: 'Times New Roman', serif;">&lt;USERNAME&gt;</span>\AppData\LocalLow\Eleventh
-                        Hour Games\Last Epoch\Saves</span>)
+                <div id="generateCodeFileData_div">
+                    <div class="textAreaInstructions">
+                        Click "Copy to Clipboard" button then paste into your character save file, then save that file
+                        that file.
+                    </div>
+                    <textarea readonly="readonly" id="generateCodeFileData" class="charTextArea"></textarea>
                 </div>
-                <input type="file" name="inputfile" id="inputfile" />
-            </div>
-            <div id="generateCodeFileData_div">
-                <div class="textAreaInstructions">
-                    Click "Copy to Clipboard" button then paste into your character save file, then save that file
-                    that file.
+                <div id="copyButton_div">
+                    <button onclick="location.reload();">Reload</button>
+                    <button class="highlight-copy-btn" onclick="func_.selectAndCopyTextArea(this)">Copy to
+                        Clipboard</button>
                 </div>
-                <textarea readonly="readonly" id="generateCodeFileData" class="charTextArea"></textarea>
+                <div id="generateCodeButton_div">
+                    <button class="bigBtn" onclick="func_.generateCodeAndDisplay()">Generate Code</button>
+                </div>
+                <hr style="width: 350px;float: left;" />
             </div>
-            <div id="copyButton_div">
-                <button onclick="location.reload();">Reload</button>
-                <button class="highlight-copy-btn" onclick="func_.selectAndCopyTextArea(this)">Copy to
-                    Clipboard</button>
+        </div>
+        <div id="editing_div">
+            <div id="skills_div" style="width: max-content;">
+                <div id="selected_skill_div"></div>
+                <div id="character_skillList_div"></div>
             </div>
-            <div id="generateCodeButton_div">
-                <button class="bigBtn" onclick="func_.generateCodeAndDisplay()">Generate Code</button>
-            </div>
-            <hr style="width: 350px;float: left;" />
+            <div id="passives_div" class="passivesDiv"></div>
         </div>
     </div>
-    <div id="editing_div">
-        <div id="skills_div" style="width: max-content;">
-            <div id="selected_skill_div"></div>
-            <div id="character_skillList_div"></div>
-        </div>
-        <div id="passives_div" class="passivesDiv"></div>
-    </div>
-    <!-- </table> -->
     <script>
         window.onload = func_.init();
     </script>

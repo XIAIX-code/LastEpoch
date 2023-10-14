@@ -208,7 +208,7 @@ input {
 }
 
 .icons {
-	background-image: url('../assets/image_matrix.webp');
+	background-image: url('../assets/images/image_matrix.webp');
 }
 
 .fileLocationDiv {
@@ -262,7 +262,7 @@ input {
 
 body {
 	background: #1c1d1f;
-	background-image: url("../assets/background.webp");
+	background-image: url("../assets/images/background.webp");
 	background-repeat: repeat;
 	background-size: contain;
 }
