@@ -1,16 +1,16 @@
 @font-face {
   font-family:Linbiolinum;
-  src:url('common/fonts/linbiolinum_sansserif.ttf') format('truetype');
+  src:url('../common/fonts/linbiolinum_sansserif.ttf') format('truetype');
   font-display:swap
 }
 @font-face {
   font-family:Cinzel;
-  src:url('common/fonts/CinzelRegular.ttf') format('truetype');
+  src:url('../common/fonts/CinzelRegular.ttf') format('truetype');
   font-display:swap
 }
 @font-face {
   font-family:Forum;
-  src:url('common/fonts/ForumRegular.ttf') format('truetype');
+  src:url('../common/fonts/ForumRegular.ttf') format('truetype');
   font-display:swap
 }
 ::-webkit-scrollbar {

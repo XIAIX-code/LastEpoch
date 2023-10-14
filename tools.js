@@ -128,21 +128,22 @@ function generateToolTipOUTERHTML(tree_id, node) {
 	outerHTML += '</div>'; // tree-node-card
 	return outerHTML;
 }
-function generateToolTip(TD_element, node, tree_id, kind) {
+function generateToolTip(tippyDivParent, node, tree_id, kind) {
 	var tippyDIV = document.createElement("div");
 	tippyDIV.classList.add("tippydiv");
 	tippyDIV.style.display = "none";
 	tippyDIV.id = kind + "_tippydiv_" + node.id + "";
 	tippyDIV.innerHTML = generateToolTipOUTERHTML(tree_id, node);
-	TD_element.addEventListener("mouseenter", function (e) {
-		tippyDIV.style.display = "";
+	tippyDivParent.addEventListener("mouseenter", function (e) {
+		tippyDIV.style.display = "unset";
 	});
-	TD_element.addEventListener("mouseleave", function (e) {
+	tippyDivParent.addEventListener("mouseleave", function (e) {
 		tippyDIV.style.display = "none";
 	});
-	TD_element.addEventListener("mousemove", function (e) {
-		tippyDIV.style.marginLeft = 25 + e.offsetX + "px";
-	});
-	TD_element.appendChild(tippyDIV);
-	return TD_element;
+	// tippyDivParent.addEventListener("mousemove", function (e) {
+	// 	//tippyDIV.style.marginLeft = e.currentTarget.offsetWidth + "px";
+	// 	//e.stopPropagation();
+	// });
+	tippyDivParent.appendChild(tippyDIV);
+	return tippyDivParent;
 }

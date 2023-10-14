@@ -282,7 +282,7 @@ var func_ = {
 										pTblINPUT__tree_node_card_DIV.appendChild(pTblINPUT__node_points_DIV);
 										passivePoints.appendChild(pTblINPUT__tree_node_card_DIV);
 										passivesRow.appendChild(passivePoints);
-										generateToolTip(passivePoints, node, passive.characterTree.treeID, 'passive');
+										generateToolTip(passivesRow, node, passive.characterTree.treeID, 'passive');
 										pTable.appendChild(passivesRow);
 									}
 								});
